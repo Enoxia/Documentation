@@ -2,4 +2,4 @@
 
 CMD + P and "Git: Commit & Sync" to push updates
 
-Automatic syncr
+Automatic synchro every minutes
