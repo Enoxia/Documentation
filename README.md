@@ -1,3 +1,5 @@
 # Wesh la zone
 
-CMD + P and "Commit & Sync" to push updates
+CMD + P and "Git: Commit & Sync" to push updates
+
+Automatic syncr
