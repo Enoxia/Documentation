@@ -52,6 +52,8 @@ wp-json/wp/v2/pages/1/revisions/1
 wp-json/wp/v2/media?parent=1
 wp-sitemap.xml
 wp-signup.php
+.wp-config.php.swp
+.wp-config.php.bak
 ```
 # Enumeration
 ## Version
