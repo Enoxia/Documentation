@@ -73,7 +73,9 @@ sudo netdiscover -i eth0 -r 10.10.10.0/24
 # Scan Alive Hosts
 If we’re during a pentest and the client provided us a list of hosts, we can use it directly with nmap :
 ```
-Bailly@htb[/htb]$ cat hosts.lst10.129.2.4
+Bailly@htb[/htb]$ cat hosts.lst
+
+10.129.2.4
 10.129.2.10
 10.129.2.11
 10.129.2.18
