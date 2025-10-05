@@ -1,5 +1,4 @@
 # External Domain Enumeration
-
 We are trying to get the `lay of the land` to ensure we provide the most comprehensive test possible for our customer.
 
 ## What Are We Looking For?
