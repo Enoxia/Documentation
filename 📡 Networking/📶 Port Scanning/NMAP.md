@@ -63,12 +63,16 @@
 |`-iL`|Use a list of hosts in a file|
 
 
-# Network Discovering w/ Netdiscover
+# Network Discovering
 ```bash
 sudo apt install netdiscover
 sudo netdiscover -i eth0 -r 10.10.10.0/24
 ```
 
+Or we could use bash to do a ping sweep :
+```bash
+for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from
+```
 
 # Scan Alive Hosts
 If we’re during a pentest and the client provided us a list of hosts, we can use it directly with nmap :
