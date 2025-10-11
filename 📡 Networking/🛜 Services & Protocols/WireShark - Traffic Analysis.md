@@ -1,5 +1,7 @@
-# 
-Wi-Fi Analysis 
+# Automated Tool
+[PCredz](https://github.com/lgandx/PCredz) extracts Credit card numbers, NTLM(DCE-RPC, HTTP, SQL, LDAP, etc), Kerberos (AS-REQ Pre-Auth etype 23), HTTP Basic, SNMP, POP, SMTP, FTP, IMAP, etc from a pcap file or from a live interface.
+
+# Wi-Fi Analysis 
 Wireshark Filter for Wifi Analysis :
 
 `(wlan.fc.type_subtype== 0x0008) && !(wlan.wfa.ie.wpa.version == 1) && !(wlan.tag.number==48)`
