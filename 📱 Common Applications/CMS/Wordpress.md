@@ -207,6 +207,7 @@ curl -X POST -d "<methodCall><methodName>wp.getUsersBlogs</methodName><params><p
 # Bruteforce using xmlrpc method
 wpscan --password-attack xmlrpc -t 20 -U admin, david -P passwords.txt --url http://blog.inlanefreight.com
 ```
+**Note : when bruteforcing WordPress, always check different methods for the --password-attack (wp-login or xmlrpc) in the Wpscan options !**
 ## RCE
 With `administrative access` to WordPress, we can `modify the PHP source code` to execute system commands. When connecting to a user, which will redirect us to the admin panel, we can click on `Appearance` on the side panel and select `Theme Editor`. This page will let us edit the PHP source code directly. An inactive theme can be selected to avoid corrupting the primary theme.
 - We can then choose to edit a non-critical file such as `404.php` and add a web shell in it. We can add the following line `wherever` we want inside the `.php` page
