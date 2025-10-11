@@ -5,6 +5,7 @@ These frameworks aim to provide a complete suite of tools for web reconnaissance
 - [theHarvester](https://github.com/laramies/theHarvester): Specifically designed for gathering email addresses, subdomains, hosts, employee names, open ports, and banners from different public sources like search engines, PGP key servers, and the SHODAN database. It is a command-line tool written in Python.
 - [SpiderFoot](https://github.com/smicallef/spiderfoot): An open-source intelligence automation tool that integrates with various data sources to collect information about a target, including IP addresses, domain names, email addresses, and social media profiles. It can perform DNS lookups, web crawling, port scanning, and more.
 - [OSINT Framework](https://osintframework.com/): A collection of various tools and resources for open-source intelligence gathering. It covers a wide range of information sources, including social media, search engines, public records, and more.
+- HTTP Observatory
 ## Focus on FinalRecon
 `FinalRecon` offers a wealth of recon information:
 - `Header Information`: Reveals server details, technologies used, and potential security misconfigurations.
