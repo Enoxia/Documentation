@@ -27,6 +27,8 @@ ftp://$IP
 # Disabling passive mode if stuck w/ message saying "229 Entering Extended Passive Mode (|||49170|)" when entering command
 ftp> passive
 ftp -p $IP
+
+# If disabling passive mode doesn't work, just pull another container WITH the --vpn option 
 ```
 
 # Bruteforce
