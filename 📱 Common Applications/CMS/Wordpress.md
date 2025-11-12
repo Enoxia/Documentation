@@ -93,9 +93,13 @@ curl -s http://blog.inlanefreight.local/ | grep themes
 ```
 We can also retrieve the complete list of all available plugins & themes (from WordPress site), and fuzz our website(s) : 
 ```bash
-# Retrieve the list of all available plugins & themes from WordPress official website
+# All the WP plugins & themes are listed here :
 http://plugins.svn.wordpress.org/
 https://themes.svn.wordpress.org/
+
+# Retrieve the list of all available plugins & themes from WordPress official website
+svn ls https://plugins.svn.wordpress.org/ > wp_plugins.txt
+wc -l wp_plugins.txt
 
 # Then we can fuzz our website at :
 http://website.com/wp-content/plugins/FUZZ/readme.txt
