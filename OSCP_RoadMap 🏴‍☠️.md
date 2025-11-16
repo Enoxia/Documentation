@@ -21,7 +21,6 @@
  be exploited to gain initial access.
  Skills: Web exploitation, PHP deserialization, privilege
  escalation.
-www.vulnshields.net
  03
  6. Beep - Difficulty: Easy
  A Linux machine that focuses on exploiting a misconfigured
