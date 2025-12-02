@@ -121,7 +121,8 @@ fping -asgq 10.10.10.0/24
 
 We could use bash to do a ping sweep :
 ```bash
-for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from
+# This will scan for all available hosts in the network, and save all ip addresses that responded to the ping request to the alive_hosts file
+for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > alive_hosts
 ```
 
 [Nmap](https://linux.die.net/man/1/nmap) can also perform a ping sweep.
