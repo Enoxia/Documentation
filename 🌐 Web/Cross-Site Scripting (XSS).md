@@ -11,6 +11,13 @@ There are three main types of XSS vulnerabilities :
 
 
 # XSS Discovery
+**Que 4 caractères à tester, s'ils sont réfléchis, alors il peut y avoir une XSS**
+```bash
+<
+>
+"
+'
+```
 ## Automated
 - Web application scanners (like [Nessus](https://www.tenable.com/products/nessus), [Burp Pro](https://portswigger.net/burp/pro), or [ZAP](https://www.zaproxy.org/))
 - Common open-spirce tools can assist like [XSS Strike](https://github.com/s0md3v/XSStrike), [Brute XSS](https://github.com/rajeshmajumdar/BruteXSS), and [XSSer](https://github.com/epsylon/xsser).
