@@ -71,8 +71,8 @@ sudo netdiscover -i eth0 -r 10.10.10.0/24
 
 Or we could use bash to do a ping sweep :
 ```bash
-for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from
-```
+# This will scan for all available hosts in the network, and save all ip addresses that responded to the ping request to the alive_hosts file
+for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > alive_hosts```
 
 # Scan Alive Hosts
 If we’re during a pentest and the client provided us a list of hosts, we can use it directly with nmap :
