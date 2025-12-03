@@ -65,8 +65,15 @@
 
 # Network Discovering
 ```bash
+# Using netdiscover
 sudo apt install netdiscover
 sudo netdiscover -i eth0 -r 10.10.10.0/24
+
+# Using bash, we'll get all subnets 
+for i in $(seq 254); do ping 192.168.$i.254 -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > all_networks
+
+# We can retrieve all alive hosts from different subnets
+while read ip; do base=$(echo $ip | awk -F. '{print $1"."$2"."$3}'); for i in $(seq 1 254); do ping -c1 -W1 $base.$i &>/dev/null && echo $base.$i & done; wait; done < all_networks | sort -u > all_hosts
 ```
 
 Or we could use bash to do a ping sweep :
