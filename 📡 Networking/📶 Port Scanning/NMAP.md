@@ -79,7 +79,7 @@ while read ip; do base=$(echo $ip | awk -F. '{print $1"."$2"."$3}'); for i in $(
 We could use bash to do a ping sweep :
 ```bash
 # This will scan for all available hosts in the network, and save all ip addresses that responded to the ping request to the alive_hosts file
-for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > alive_hosts```
+for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > alive_hosts
 ```
 
 # Scan Alive Hosts
