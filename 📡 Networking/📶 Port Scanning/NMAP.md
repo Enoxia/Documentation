@@ -66,7 +66,6 @@
 # Network Discovering
 ```bash
 # Using netdiscover
-sudo apt install netdiscover
 sudo netdiscover -i eth0 -r 10.10.10.0/24
 
 # Using bash, we'll get all subnets 
@@ -76,16 +75,17 @@ for i in $(seq 254); do ping 192.168.$i.254 -c1 -W1 & done | grep from | awk '{p
 while read ip; do base=$(echo $ip | awk -F. '{print $1"."$2"."$3}'); for i in $(seq 1 254); do ping -c1 -W1 $base.$i &>/dev/null && echo $base.$i & done; wait; done < all_networks | sort -u > all_hosts
 ```
 
-Or we could use bash to do a ping sweep :
+# Hosts Discovering
+We could use bash to do a ping sweep :
 ```bash
 # This will scan for all available hosts in the network, and save all ip addresses that responded to the ping request to the alive_hosts file
 for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{print $4}' | sed 's/://' | sort -u > alive_hosts```
+```
 
 # Scan Alive Hosts
 If we’re during a pentest and the client provided us a list of hosts, we can use it directly with nmap :
-```
-Bailly@htb[/htb]$ cat hosts.lst
-
+```bash
+cat alive_hosts
 10.129.2.4
 10.129.2.10
 10.129.2.11
@@ -94,7 +94,7 @@ Bailly@htb[/htb]$ cat hosts.lst
 10.129.2.20
 10.129.2.28
 
-Bailly@htb[/htb]$ sudo nmap -sn -oA tnet -iL hosts.lst | grep for | cut -d" " -f5
+sudo nmap -sn -oA tnet -iL hosts.lst | grep for | cut -d" " -f5
 
 10.129.2.18
 10.129.2.19
