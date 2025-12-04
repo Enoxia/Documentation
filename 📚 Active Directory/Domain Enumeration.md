@@ -167,7 +167,7 @@ We can look for an `NT AUTHORITY\\SYSTEM` account on a `domain-joined` host, a
 ## Domain User Enumeration
 ```bash
 # List all users
-netexec smb 172.16.5.5 -u forend -p Klmcargo2 --users
+netexec smb 172.16.5.5 -u forend -p Klmcargo2 --users > all_ad_users.txt
 # Same if password contain special caracters (coller le password juste après le "-p")
 netexec smb 172.16.139.3 -u pthorpe_adm -p'-pl,MKO)9ijn' --users > all_ad_users.txt
 # To keep only the users in the list, removing all info that netexec add
