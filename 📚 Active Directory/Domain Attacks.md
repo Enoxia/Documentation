@@ -142,7 +142,7 @@ neo4j start
 bloodhound-python -u 'svc-alfresco' -p 's3rvice' -ns 10.10.10.161 -d htb.local -c all
 
 # The zip files can the gathered into a zip folder
-zip -r domain.zip ./ *.json
+zip -r domain.zip ./*.json
 
 # Import the zip archive into BloodHound GUI
 bloodhound
