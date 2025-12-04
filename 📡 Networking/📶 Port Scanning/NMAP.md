@@ -83,22 +83,10 @@ for i in $(seq 254); do ping 10.10.10.$i -c1 -W1 & done | grep from | awk '{prin
 ```
 
 # Scan Alive Hosts
-If we’re during a pentest and the client provided us a list of hosts, we can use it directly with nmap :
+We can next do the following Stealth nmap scan, which will only scan the default ports, without grabbing any banners (-sV) or scan for script (-sC) which is faster :
 ```bash
-cat alive_hosts
-10.129.2.4
-10.129.2.10
-10.129.2.11
-10.129.2.18
-10.129.2.19
-10.129.2.20
-10.129.2.28
-
-sudo nmap -sn -oA tnet -iL hosts.lst | grep for | cut -d" " -f5
-
-10.129.2.18
-10.129.2.19
-10.129.2.20
+# Nmap stealth scan & save output into web view
+nmap -oX nmap_alive_hosts.xml --webxml -iL alive_hosts -Pn -sS
 ```
 
 Remember, this may mean that the other hosts ignore the default **ICMP echo requests** because of their firewall configurations. Since `Nmap` does not receive a response, it marks those hosts as inactive.
