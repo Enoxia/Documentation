@@ -79,16 +79,16 @@ We can scrap and retrieve the complete list of all working employees from Linked
 ```javascript
 /**
  * Script d'extraction LinkedIn - Onglet Personnes
- * Auteur : BaillyLaZone (c'est faux c'est Gemini, je sais pas coder moi...)
+ * Auteur : BaillyLaZone (non je rigole c'est Gemini, je sais pas coder moi...)
  * Environnement : Firefox / Ubuntu
  */
 
 (async function() {
     // --- CONFIGURATION ---
     const CONFIG = {
-        scrollDelay: 2500,      // Un peu plus lent pour laisser le temps au DOM de charger après un clic
-        maxScrolls: 100,        // Augmenté pour aller plus loin
-        filename: 'linkedin_employes_complet.csv'
+        scrollDelay: 2500,      
+        maxScrolls: 100,        
+        filename: 'linkedin_employes_clean.csv' 
     };
 
     // --- SÉLECTEURS ---
@@ -96,7 +96,6 @@ We can scrap and retrieve the complete list of all working employees from Linked
         card: '.org-people-profile-card__profile-info',
         name: '.artdeco-entity-lockup__title',
         position: '.artdeco-entity-lockup__subtitle',
-        // Sélecteur générique pour le bouton de chargement LinkedIn
         loadButton: '.scaffold-finite-scroll__load-button' 
     };
 
@@ -104,7 +103,6 @@ We can scrap and retrieve the complete list of all working employees from Linked
     const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const cleanText = (text) => text ? text.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";
 
-    // Fonction pour trouver un bouton par son texte (Fallback si la classe change)
     function findButtonByText(searchText) {
         const buttons = document.querySelectorAll('button');
         for (const btn of buttons) {
@@ -121,79 +119,80 @@ We can scrap and retrieve the complete list of all working employees from Linked
         
         let previousCardCount = 0;
         let scrolls = 0;
-        let noChangeCount = 0; // Compteur pour détecter si on est bloqué
+        let noChangeCount = 0;
 
         while (scrolls < CONFIG.maxScrolls) {
-            // 1. On scrolle tout en bas
             window.scrollTo(0, document.body.scrollHeight);
-            await wait(1000); // Petite pause post-scroll
+            await wait(1000); 
 
-            // 2. Recherche et clic du bouton "Afficher plus"
-            // On cherche par classe, sinon par texte (pour la version FR)
-            const loadBtn = document.querySelector(SELECTORS.loadButton) || findButtonByText("Afficher plus");
+            // CORRECTION ICI : Utilisation de SELECTORS au lieu de l'emoji
+            const loadBtn = document.querySelector(SELECTORS.loadButton) || findButtonByText("Afficher plus") || findButtonByText("Show more");
             
             if (loadBtn) {
-                console.log("👆 Bouton 'Afficher plus' détecté. Clic !");
+                console.log("👆 Bouton détecté. Clic !");
                 loadBtn.click();
-                await wait(CONFIG.scrollDelay); // Pause plus longue après un clic (chargement API)
+                await wait(CONFIG.scrollDelay); 
             } else {
-                // Pas de bouton, c'est peut-être juste du scroll infini standard
                 await wait(CONFIG.scrollDelay);
             }
 
-            // 3. Vérification de la progression
             const currentCards = document.querySelectorAll(SELECTORS.card).length;
             console.log(`Tour ${scrolls + 1}: ${currentCards} profils affichés.`);
 
             if (currentCards === previousCardCount) {
                 noChangeCount++;
-                // Si rien n'a bougé après 3 tentatives (scroll + attente), on considère que c'est fini
                 if (noChangeCount >= 3) {
-                    console.log("✅ Plus de nouveaux profils chargés après plusieurs tentatives. Fin.");
+                    console.log("✅ Fin du chargement.");
                     break;
                 }
             } else {
-                noChangeCount = 0; // Reset si on a trouvé des nouveaux
+                noChangeCount = 0; 
             }
 
             previousCardCount = currentCards;
             scrolls++;
         }
         
-        console.log("⏹️ Extraction des données...");
+        console.log("⏹️ Extraction et filtrage des données...");
         extractAndDownload();
     }
 
-    // --- 2. EXTRACTION ---
+    // --- 2. EXTRACTION AVEC FILTRE ---
     function extractAndDownload() {
         const cards = document.querySelectorAll(SELECTORS.card);
-        console.log(`🔍 Total final : ${cards.length} profils récupérés.`);
-
-        if (cards.length === 0) {
-            alert("Aucun profil trouvé. Les sélecteurs CSS ont peut-être changé.");
-            return;
-        }
-
+        
         let csvContent = "Nom complet;Poste;Lien Profil\n";
+        let countExported = 0;
+        let countIgnored = 0;
+
+        // Liste des termes à exclure
+        const blacklist = ["utilisateur linkedin", "linkedin member"];
 
         cards.forEach(card => {
             const nameNode = card.querySelector(SELECTORS.name);
             const posNode = card.querySelector(SELECTORS.position);
-            
-            // Tentative de récupération du lien (souvent dans un <a> parent ou voisin)
-            // Le sélecteur dépend de la structure exacte, souvent le nom est dans un lien
-            const linkNode = nameNode ? nameNode.closest('a') || nameNode.querySelector('a') : null;
+            const linkNode = nameNode ? (nameNode.closest('a') || nameNode.querySelector('a')) : null;
 
-            const name = nameNode ? cleanText(nameNode.innerText) : "Inconnu";
+            const rawName = nameNode ? cleanText(nameNode.innerText) : "Inconnu";
             const position = posNode ? cleanText(posNode.innerText) : "Non renseigné";
             const link = linkNode ? linkNode.href : "";
 
-            const safeName = name.replace(/;/g, ",");
+            // --- FILTRAGE ---
+            const isBlacklisted = blacklist.some(term => rawName.toLowerCase().includes(term));
+
+            if (isBlacklisted) {
+                countIgnored++;
+                return; 
+            }
+
+            const safeName = rawName.replace(/;/g, ",");
             const safePos = position.replace(/;/g, ",");
 
             csvContent += `${safeName};${safePos};${link}\n`;
+            countExported++;
         });
 
+        console.log(`📊 Résultat : ${countExported} exportés | ${countIgnored} ignorés ("Utilisateur LinkedIn").`);
         downloadCSV(csvContent);
     }
 
@@ -203,10 +202,9 @@ We can scrap and retrieve the complete list of all working employees from Linked
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
         
-        // Ajout de la date dans le nom de fichier
         const date = new Date().toISOString().slice(0,10);
         link.setAttribute("href", url);
-        link.setAttribute("download", `linkedin_personnes_${date}.csv`);
+        link.setAttribute("download", `linkedin_personnes_filtre_${date}.csv`);
         
         document.body.appendChild(link);
         link.click();
@@ -214,7 +212,7 @@ We can scrap and retrieve the complete list of all working employees from Linked
     }
 
     // --- LANCEMENT ---
-    const start = confirm("Lancer le script V2 (avec gestion du bouton 'Afficher plus') ?");
+    const start = confirm("Lancer le script V3 (Corrigé) ?");
     if (start) {
         await smartScroll();
     }
