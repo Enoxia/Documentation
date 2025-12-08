@@ -74,6 +74,154 @@ PS C:\htb> Get-DomainPolicy
 
 
 # Enumerating Valid Users & Make A List
+## LinkedIn Users Scrapping
+We can scrap and retrieve the complete list of all working employees from LinkedIn : we'll need to go to the company's people page at `linkedin.com/company/nom-entreprise/people/`, and once in here, we can run from the Firefox's browser console the following script :
+```javascript
+/**
+ * Script d'extraction LinkedIn - Onglet Personnes (Version V2 - Avec clic bouton)
+ * Auteur : Gemini (Pour usage éducatif)
+ * Environnement : Firefox / Ubuntu
+ */
+
+(async function() {
+    // --- CONFIGURATION ---
+    const CONFIG = {
+        scrollDelay: 2500,      // Un peu plus lent pour laisser le temps au DOM de charger après un clic
+        maxScrolls: 100,        // Augmenté pour aller plus loin
+        filename: 'linkedin_employes_complet.csv'
+    };
+
+    // --- SÉLECTEURS ---
+    const SELECTORS = {
+        card: '.org-people-profile-card__profile-info',
+        name: '.artdeco-entity-lockup__title',
+        position: '.artdeco-entity-lockup__subtitle',
+        // Sélecteur générique pour le bouton de chargement LinkedIn
+        loadButton: '.scaffold-finite-scroll__load-button' 
+    };
+
+    // --- UTILITAIRES ---
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const cleanText = (text) => text ? text.replace(/(\r\n|\n|\r)/gm, " ").trim() : "";
+
+    // Fonction pour trouver un bouton par son texte (Fallback si la classe change)
+    function findButtonByText(searchText) {
+        const buttons = document.querySelectorAll('button');
+        for (const btn of buttons) {
+            if (btn.innerText && btn.innerText.includes(searchText)) {
+                return btn;
+            }
+        }
+        return null;
+    }
+
+    // --- 1. LOGIQUE DE SCROLL ET CLIC ---
+    async function smartScroll() {
+        console.log("⬇️ Démarrage du Smart Scroll...");
+        
+        let previousCardCount = 0;
+        let scrolls = 0;
+        let noChangeCount = 0; // Compteur pour détecter si on est bloqué
+
+        while (scrolls < CONFIG.maxScrolls) {
+            // 1. On scrolle tout en bas
+            window.scrollTo(0, document.body.scrollHeight);
+            await wait(1000); // Petite pause post-scroll
+
+            // 2. Recherche et clic du bouton "Afficher plus"
+            // On cherche par classe, sinon par texte (pour la version FR)
+            const loadBtn = document.querySelector(SELECTORS.loadButton) || findButtonByText("Afficher plus");
+            
+            if (loadBtn) {
+                console.log("👆 Bouton 'Afficher plus' détecté. Clic !");
+                loadBtn.click();
+                await wait(CONFIG.scrollDelay); // Pause plus longue après un clic (chargement API)
+            } else {
+                // Pas de bouton, c'est peut-être juste du scroll infini standard
+                await wait(CONFIG.scrollDelay);
+            }
+
+            // 3. Vérification de la progression
+            const currentCards = document.querySelectorAll(SELECTORS.card).length;
+            console.log(`Tour ${scrolls + 1}: ${currentCards} profils affichés.`);
+
+            if (currentCards === previousCardCount) {
+                noChangeCount++;
+                // Si rien n'a bougé après 3 tentatives (scroll + attente), on considère que c'est fini
+                if (noChangeCount >= 3) {
+                    console.log("✅ Plus de nouveaux profils chargés après plusieurs tentatives. Fin.");
+                    break;
+                }
+            } else {
+                noChangeCount = 0; // Reset si on a trouvé des nouveaux
+            }
+
+            previousCardCount = currentCards;
+            scrolls++;
+        }
+        
+        console.log("⏹️ Extraction des données...");
+        extractAndDownload();
+    }
+
+    // --- 2. EXTRACTION ---
+    function extractAndDownload() {
+        const cards = document.querySelectorAll(SELECTORS.card);
+        console.log(`🔍 Total final : ${cards.length} profils récupérés.`);
+
+        if (cards.length === 0) {
+            alert("Aucun profil trouvé. Les sélecteurs CSS ont peut-être changé.");
+            return;
+        }
+
+        let csvContent = "Nom complet;Poste;Lien Profil\n";
+
+        cards.forEach(card => {
+            const nameNode = card.querySelector(SELECTORS.name);
+            const posNode = card.querySelector(SELECTORS.position);
+            
+            // Tentative de récupération du lien (souvent dans un <a> parent ou voisin)
+            // Le sélecteur dépend de la structure exacte, souvent le nom est dans un lien
+            const linkNode = nameNode ? nameNode.closest('a') || nameNode.querySelector('a') : null;
+
+            const name = nameNode ? cleanText(nameNode.innerText) : "Inconnu";
+            const position = posNode ? cleanText(posNode.innerText) : "Non renseigné";
+            const link = linkNode ? linkNode.href : "";
+
+            const safeName = name.replace(/;/g, ",");
+            const safePos = position.replace(/;/g, ",");
+
+            csvContent += `${safeName};${safePos};${link}\n`;
+        });
+
+        downloadCSV(csvContent);
+    }
+
+    // --- 3. GÉNÉRATION DU FICHIER ---
+    function downloadCSV(content) {
+        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        
+        // Ajout de la date dans le nom de fichier
+        const date = new Date().toISOString().slice(0,10);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `linkedin_personnes_${date}.csv`);
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // --- LANCEMENT ---
+    const start = confirm("Lancer le script V2 (avec gestion du bouton 'Afficher plus') ?");
+    if (start) {
+        await smartScroll();
+    }
+
+})();
+```
+
 ## SMB NULL Session
 ```bash
 enum4linux -U 172.16.5.5  | grep "user:" | cut -f2 -d"[" | cut -f1 -d"]"
