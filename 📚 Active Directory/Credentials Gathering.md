@@ -204,7 +204,7 @@ We can scrap and retrieve the complete list of all working employees from Linked
         
         const date = new Date().toISOString().slice(0,10);
         link.setAttribute("href", url);
-        link.setAttribute("download", `linkedin_personnes_filtre_${date}.csv`);
+        link.setAttribute("download", `linkedin_users_${date}.csv`);
         
         document.body.appendChild(link);
         link.click();
