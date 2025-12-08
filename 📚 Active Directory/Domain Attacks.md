@@ -92,7 +92,7 @@ More info on the [HTB_ACL](https://academy.hackthebox.com/module/143/section/145
 [AbuseACLs](https://github.com/AetherBlack/abuseACL) for enumerating ACEs / ACLs.
 Then we can use the documentation of [DACL](https://www.thehacker.recipes/a-d/movement/dacl) to find out how to exploit the rights and use [dacledit](https://github.com/ThePorgs/impacket/blob/master/examples/dacledit.py) to exploit the ACEs.
 ```bash
-# Look at the options because they've been updated and not the readme !!!! 
+# Look at the options, we'll need the "-recurse" option. From exegol, we can "pipx upgrade abuseACL" to update it
 abuseACL -h
 
 # List vulnerable ACEs/ACLs for the current user
