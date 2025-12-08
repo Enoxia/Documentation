@@ -219,6 +219,10 @@ We can scrap and retrieve the complete list of all working employees from Linked
 
 })();
 ```
+Other projects doing the same exists : 
+https://github.com/initstring/linkedin2username
+https://github.com/m8sec/CrossLinked
+
 
 ## SMB NULL Session
 ```bash
