@@ -78,8 +78,8 @@ PS C:\htb> Get-DomainPolicy
 We can scrap and retrieve the complete list of all working employees from LinkedIn : we'll need to go to the company's people page at `linkedin.com/company/nom-entreprise/people/`, and once in here, we can run from the Firefox's browser console the following script :
 ```javascript
 /**
- * Script d'extraction LinkedIn - Onglet Personnes (Version V2 - Avec clic bouton)
- * Auteur : Gemini (Pour usage éducatif)
+ * Script d'extraction LinkedIn - Onglet Personnes
+ * Auteur : BaillyLaZone (c'est faux c'est Gemini, je sais pas coder moi...)
  * Environnement : Firefox / Ubuntu
  */
 
