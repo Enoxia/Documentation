@@ -210,6 +210,14 @@ We can scrap and retrieve the complete list of all working employees from Linked
 
 })();
 ```
+Once done, we could use this command to transform the generated `.csv` into a file containing only the employees filtered by `prenom.nom` : 
+```bash
+iconv -c -f utf8 -t ascii//TRANSLIT linkedin_users_*.csv | tail -n +2 | sed 's/,.*//' | tr '[:upper:]' '[:lower:]' | sed "s/[^a-z0-9]/\./g" | tr -s '.' | sed 's/\.$//' > utilisateurs_formates.txt
+```
+Once we have our file generated, we can add the email of the company : 
+```bash
+sed -i 's/$/@email.fr/' utilisateurs_formates.txt
+```
 
 Or we can use a tool such as [linkedin2username](https://github.com/initstring/linkedin2username) or [CrossLinked](https://github.com/m8sec/CrossLinked
 ) to scrape data from a company's LinkedIn page and create various mashups of usernames (flast, first.last, f.last, etc.) that can be added to our list of potential password spraying targets.
