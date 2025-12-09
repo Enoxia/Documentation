@@ -225,6 +225,11 @@ Or we can use a tool such as [linkedin2username](https://github.com/initstring/
 ### Credentials Hunting
 [Dehashed](http://dehashed.com/) is an excellent tool for hunting for cleartext credentials and password hashes in breach data. We can search either on the site or using a script that performs queries via the API. Can be useful for creating a user list for external or internal password spraying.
 
+We can also search on [IntelX](https://intelx.io/), download all the found results into a .zip file, and then execute the following command, where `search.zip` is our downloaded zip archive, and $DOMAIN the search we wanna make :
+```bash
+7z e -so -bd search.zip 2>/dev/null | cat | grep $DOMAIN | tee 
+```
+
 ## OSINT 
 Every other Open Source INTelligence information.
 
