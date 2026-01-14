@@ -101,7 +101,13 @@ We can move it to a location in our `$PATH` such as `/usr/local/bin` to be a
 nuclei -target https://example.com
 ```
 We need to visit [Nuclei's Documentation](https://docs.projectdiscovery.io/templates/introduction) for test ideas. We can customize our scan using template : 
-Use case	Nuclei template
+|**Use case**|**Nuclei Template**|
+|---|---|
+|WordPress|[WordPress](https://wordpress.org/) is an open-source Content Management System (CMS) that can be used for multiple purposes. It's often used to host blogs and forums. WordPress is highly customizable as well as SEO friendly, which makes it popular among companies. However, its customizability and extensible nature make it prone to vulnerabilities through third-party themes and plugins. WordPress is written in PHP and usually runs on Apache with MySQL as the backend.|
+|Drupal|[Drupal](https://www.drupal.org/) is another open-source CMS that is popular among companies and developers. Drupal is written in PHP and supports using MySQL or PostgreSQL for the backend. Additionally, SQLite can be used if there's no DBMS installed. Like WordPress, Drupal allows users to enhance their websites through the use of themes and modules.|
+|Joomla|[Joomla](https://www.joomla.org/) is yet another open-source CMS written in PHP that typically uses MySQL but can be made to run with PostgreSQL or SQLite. Joomla can be used for blogs, discussion forums, e-commerce, and more. Joomla can be customized heavily with themes and extensions and is estimated to be the third most used CMS on the internet after WordPress and Shopify.|
+
+
 Detect known CVEs	CVE-2021-44228 (Log4Shell)
 Identify Out-of-Band vulnerabilities	Blind SQL Injection via OOB
 SQL Injection detection	Generic SQL Injection
