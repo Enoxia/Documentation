@@ -94,4 +94,9 @@ We can move it to a location in our `$PATH` such as `/usr/local/bin` to be a
 ```bash
  cat web_discovery.xml | ./aquatone -nmap
 ```
-
+# Using Nuclei
+[Nuclei](https://github.com/projectdiscovery/nuclei) is a modern, high-performance vulnerability scanner that leverages simple YAML-based templates. It empowers you to design custom vulnerability detection scenarios that mimic real-world conditions, leading to zero false positives.
+```bash
+# Default rapid scan
+nuclei -target https://example.com
+```
