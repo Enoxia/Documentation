@@ -100,3 +100,19 @@ We can move it to a location in our `$PATH` such as `/usr/local/bin` to be a
 # Default rapid scan
 nuclei -target https://example.com
 ```
+We need to visit [Nuclei's Documentation](https://docs.projectdiscovery.io/templates/introduction) for test ideas. We can customize our scan using template : 
+Use case	Nuclei template
+Detect known CVEs	CVE-2021-44228 (Log4Shell)
+Identify Out-of-Band vulnerabilities	Blind SQL Injection via OOB
+SQL Injection detection	Generic SQL Injection
+Cross-Site Scripting (XSS)	Reflected XSS Detection
+Default or weak passwords	Default Credentials Check
+Secret files or data exposure	Sensitive File Disclosure
+Identify open redirects	Open Redirect Detection
+Detect subdomain takeovers	Subdomain Takeover Templates
+Security misconfigurations	Unprotected Jenkins Console
+Weak SSL/TLS configurations	SSL Certificate Expiry
+Misconfigured cloud services	Open S3 Bucket Detection
+Remote code execution vulnerabilities	RCE Detection Templates
+Directory traversal attacks	Path Traversal Detection
+File inclusion vulnerabilities	Local/Remote File Inclusion
