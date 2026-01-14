@@ -82,6 +82,9 @@ dig axfr @nsztm1.digi.ninja zonetransfer.me
 | Section | Description |
 |:-------- |:--------:|
 | General     | Get general information about the target. |
-| General     | Get general information about the target. |
-| General     | Get general information about the target. |
-| General     | Get general information about the target. |
+| Phpinfo     | Extract Symfony environment variables from the exposed phpinfo(). |
+| Routes     | Get the list of registered routes. |
+| Request logs     | Look for credentials in POST request logs. |
+| Project files     | Retrieve project files (configuration, database, etc.) based on a wordlist. |
+| Sources    | Extract the application source code. |
+| Cookies    | Craft Remember Me cookies. |
