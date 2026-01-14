@@ -77,3 +77,11 @@ dnsenum --enum inlanefreight.com -f /usr/share/seclists/Discovery/DNS/subdomains
 # Request zone transfer
 dig axfr @nsztm1.digi.ninja zonetransfer.me
 ```
+# PHP Framework : Symfony
+[Enemies Of Symfony (EOS)](https://github.com/synacktiv/eos) can be used to loots information from a Symfony target when **debug** mode is enabled : 
+| Section | Description |
+|:-------- |:--------:|
+| General     | Get general information about the target. |
+| General     | Get general information about the target. |
+| General     | Get general information about the target. |
+| General     | Get general information about the target. |
