@@ -1604,9 +1604,9 @@ Over time, several versions of UUIDs have been defined, each with its own approa
 - `UUIDv3` and UUIDv5 generate deterministic IDs by hashing names and namespaces, ensuring that the same input always produces the same identifier.
 - `UUIDv4`, the most widely used today, skips timestamps and hardware info entirely and instead relies on randomness to generate unique IDs.
 
-The `third packet` of a uuid indicated his version
-b1dcb8b6-b6ec-`1`1ed-b65e-455c57e26a3b -> version 1
-573dfb54-c21a-`4`03c-ba7d-822635737450 -> version 4
+The `third packet` of a uuid indicates his version
+- b1dcb8b6-b6ec-`1`1ed-b65e-455c57e26a3b -> version 1
+- 573dfb54-c21a-`4`03c-ba7d-822635737450 -> version 4
 
 We can find example of exploitation [here](https://realizesec.com/blog/sandwich-attacks-exploiting-uuid-v1)
 
