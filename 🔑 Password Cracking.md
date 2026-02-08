@@ -1596,3 +1596,20 @@ Upon inspecting `jane_smith_usernames.txt`, you'll encounter a diverse array of
 - Initials: `js`, `j.s.`, `s.j.`, etc.
 - etc
 This comprehensive list, tailored to the target's name, is valuable in a brute-force attack.
+
+# UUIDv1 Sandwich Attacks
+Over time, several versions of UUIDs have been defined, each with its own approach : 
+- `UUIDv1` is based on timestamps and the machine’s MAC address, making IDs unique but also unintentionally revealing details about when and where they were created.
+- `UUIDv2` is a lesser-known variant that combines timestamps with system identifiers like POSIX user IDs. It never gained much popularity and is rarely used in practice today.
+- `UUIDv3` and UUIDv5 generate deterministic IDs by hashing names and namespaces, ensuring that the same input always produces the same identifier.
+- `UUIDv4`, the most widely used today, skips timestamps and hardware info entirely and instead relies on randomness to generate unique IDs.
+
+The `third packet` of a uuid indicated his version
+b1dcb8b6-b6ec-`1`1ed-b65e-455c57e26a3b -> version 1
+573dfb54-c21a-`4`03c-ba7d-822635737450 -> version 4
+
+We can find example of exploitation [here](https://realizesec.com/blog/sandwich-attacks-exploiting-uuid-v1)
+
+The [GUIDTool](https://github.com/intruder-io/guidtool) can inspect and predict uuidv1 values for us. It is used to analyse version 1 GUIDs/UUIDs from a system. With the information obtained from analysis, it is often possible to **forge future v1 GUIDs** created by the system, if we know the **approximate time** they were created.
+
+Another tool made from [Lupin](https://github.com/Lupin-Holmes/sandwich) can be used to do the sandwich attack. If we can retrieve 2 uuids version 1, we can try to guess the ones between them. 
