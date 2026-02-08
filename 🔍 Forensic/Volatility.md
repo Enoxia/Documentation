@@ -12,3 +12,5 @@ With Volatility, investigators can:
 - Pull SAM hashes from memory dumps to escalate privileges, even in locked or isolated environments (e.g., ESXi hosts).
 
 Here is a Volatility [CheatSheet](https://blog.onfvp.com/post/volatility-cheatsheet/) based on both version 2 and 3.
+
+We can for example [retrieve the machine's hostname](https://www.aldeid.com/wiki/Volatility/Retrieve-hostname)
