@@ -11,6 +11,8 @@ With Volatility, investigators can:
 - Use YARA rules to scan for known malware signatures. 
 - Pull SAM hashes from memory dumps to escalate privileges, even in locked or isolated environments (e.g., ESXi hosts).
 
-Here is a Volatility [CheatSheet](https://blog.onfvp.com/post/volatility-cheatsheet/) based on both version 2 and 3.
+Here is a useful [Volatility CheatSheet](https://repository.root-me.org/Forensic/EN%20-%20Volatility%20cheatsheet%20v2.4.pdf) from Root-Me.
+
+Here is another Volatility [CheatSheet](https://blog.onfvp.com/post/volatility-cheatsheet/) based on both version 2 and 3.
 
 We can for example [retrieve the machine's hostname](https://www.aldeid.com/wiki/Volatility/Retrieve-hostname)
