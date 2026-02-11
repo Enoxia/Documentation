@@ -62,6 +62,9 @@ ffuf -w "/SecLists/Discovery/Web-Content/burp-parameter-names.txt" -u 'http://<T
 # Try the found parameter
 curl http://<TARGET IP>:3003/?id=1
 ```
+
+The tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) can help us automate the process of enumerating APIs 
+
 - Once found, try to test different values for the parameter
 - We could also try to combine `SQLi` through the `API endpoint` as this parameter `looks interesting`
 ## File Upload
