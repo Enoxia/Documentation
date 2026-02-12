@@ -1,6 +1,8 @@
 There are a lots of exploitation on [Flask](https://flask.palletsprojects.com/en/stable/) available (look for CVEs if we can retrieve the version in use).
 
 # Console Debug PIN Exploit
+[Full Tuto Here](https://www.bengrewell.com/cracking-flask-werkzeug-console-pin/)
+
 In some occasions the `/console` endpoint is going to be protected by a pin. If you have a `file traversal` vulnerability, you can leak all the necessary info to generate that pin, and thus execute `python code` remotely on the machine. 
 
 To exploit the console PIN, two sets of variables, `probably_public_bits` and `private_bits`, are needed :
@@ -21,7 +23,7 @@ To exploit the console PIN, two sets of variables, `probably_public_bits` and `p
 
 `uuid.getnode()`: Fetches the MAC address of the current machine, with str(uuid.getnode()) translating it into a decimal format.
 
-  To determine the server’s MAC address, one must identify the active network interface used by the app (e.g., ens3). In cases of     uncertainty, leak /proc/net/arp to find the device ID, then extract the MAC address from /sys/class/net/<device id>/address.
+  To determine the server’s MAC address, one must identify the active network interface used by the app (e.g., ens3). In cases of     uncertainty, leak `/proc/net/arp` to find the device ID, then extract the MAC address from `/sys/class/net/<device id>/address`.
 
   Conversion of a hexadecimal MAC address to decimal can be performed as shown below:
 
