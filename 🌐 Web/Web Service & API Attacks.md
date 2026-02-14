@@ -50,6 +50,17 @@ sudo tcpdump -i tun0 icmp
 
 # API Attacks
 When we found an interesting `API endpoint` like `http://IP:PORT/api/endpoint?parameter=` we should always try various payloads of `SQLi, LFI, SSRF, and XSS if the parameter value gets reflected in the response`.
+
+Basically, we should try `OWASP TOP Ten` over APIs endpoints when we found them.
+
+## Broken Object Level Authorization (aka IDOR)
+Web APIs can allow users to request data or records by sending various parameters, including `UUIDs`, also known ad `GUIDs`, or integer `IDs`. Failing to properly and securely verify that a user has ownership and permission to view a specific resource through `objet-level authorization mechanisms` can lead to data exposure or security vulnerabilities.
+
+If we come accross `IDs` or `UUIDs` when requesting a resource, we should always try to enumerate resource with other values (fuzz).
+
+## Broken Authentication
+
+
 ## Info Disclosure w/ SQLi
 - When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
 ```bash
