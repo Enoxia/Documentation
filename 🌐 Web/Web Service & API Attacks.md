@@ -59,7 +59,7 @@ Web APIs can allow users to request data or records by sending various parameter
 If we come accross `IDs` or `UUIDs` when requesting a resource, we should always try to enumerate resource with other values (fuzz).
 
 ## Broken Authentication
-
+We should also verify [Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) mechanisms of APIs. 
 
 ## Info Disclosure w/ SQLi
 - When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
