@@ -60,6 +60,10 @@ If we come accross `IDs` or `UUIDs` when requesting a resource, we should always
 
 ## Broken Authentication
 We should also verify [Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) mechanisms of APIs. 
+- We could try to `bruteforce account's passwords` if password policy is weak, and if there is no rate-limiting
+- We could try to `bruteforce OTPs` if there is a `password reset` functionnality
+- We could try to `modify / guess security questions` to try to takeover an accoun, if implemented.
+
 
 ## Info Disclosure w/ SQLi
 - When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
