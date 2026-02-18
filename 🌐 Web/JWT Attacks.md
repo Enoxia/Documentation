@@ -44,6 +44,26 @@ The JSON Web Signature (JWS) specification describes an optional `jwk` header pa
 
 Ideally, servers should only use a `limited whitelist of public keys` to verify JWT signatures. However, misconfigured servers sometimes use `any key that's embedded` in the `jwk` parameter.
 
+- We can try to sign a modified JWT using `our own RSA private key`, then embedding the matching `public key` in the `jwk` header.
+
+The Burp's [JWT Editor Extension](https://portswigger.net/bappstore/26aaa5ded2f74beea19e2ed8345a93dd) can let us do that : 
+
+- With the extension loaded, in Burp's main tab bar, go to the `JWT Editor Keys` tab.
+- [Generate a new RSA key](https://portswigger.net/burp/documentation/desktop/testing-workflow/vulnerabilities/session-management/jwts#adding-a-jwt-signing-key).
+- Send a request containing a JWT to Burp Repeater.
+- In the message editor, switch to the extension-generated `JSON Web Token` tab and modify the token's payload however you like.
+- Click `Attack`, then select `Embedded JWK`. When prompted, select your newly generated RSA key.
+- Send the request to test how the server responds.
+
+You can also perform this attack manually by adding the `jwk` header yourself. However, you may also need to `update the JWT's kid` header parameter to match the `kid` of the embedded key. The extension's built-in attack takes care of this step for you.
+
 ## Exploiting jku Header Parameter
+Some servers let you use the `jku` (JWK Set URL) header parameter to reference a `JWK Set` (= a JSON object containing an array of JWKs representing different keys) containing the key. When verifying the signature, the server fetches the relevant key from this `URL`.
+
+`JWK Sets` are sometimes exposed publicly via a standard endpoint, such as `/.well-known/jwks.json`.
+
+More secure websites will only fetch keys from trusted domains, but you can sometimes take advantage of URL parsing discrepancies to bypass this kind of filtering. We covered some examples of these in our topic on SSRF.
+
 ## Exploiting kid Header Parameter
+
 
