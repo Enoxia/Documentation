@@ -36,9 +36,9 @@ Hashcat signs the header and payload from the JWT using each secret in the wordl
 
 # Header Injection
 Only the `alg` header parameter is mandatory, but sometimes JWT headers contain several other parameters : 
-`jwk` (JSON Web Key) - Provides an embedded JSON object representing the key.
-`jku` (JSON Web Key Set URL) - Provides a URL from which servers can fetch a set of keys containing the correct key.
-`kid` (Key ID) - Provides an ID that servers can use to identify the correct key in cases where there are multiple keys to choose from. Depending on the format of the key, this may have a matching `kid` parameter.
+- `jwk` (JSON Web Key) - Provides an embedded JSON object representing the key.
+- `jku` (JSON Web Key Set URL) - Provides a URL from which servers can fetch a set of keys containing the correct key.
+- `kid` (Key ID) - Provides an ID that servers can use to identify the correct key in cases where there are multiple keys to choose from. Depending on the format of the key, this may have a matching `kid` parameter.
 ## Exploiting jwk Header Parameter
 The JSON Web Signature (JWS) specification describes an optional `jwk` header parameter, which servers can use to embed their `public key` directly within the token itself in JWK format.
 
