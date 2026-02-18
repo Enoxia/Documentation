@@ -57,12 +57,22 @@ The Burp's [JWT Editor Extension](https://portswigger.net/bappstore/26aaa5ded2f7
 
 You can also perform this attack manually by adding the `jwk` header yourself. However, you may also need to `update the JWT's kid` header parameter to match the `kid` of the embedded key. The extension's built-in attack takes care of this step for you.
 
+By default on every header, we should try : 
+- `SQL` injection payload, because sometimes the header is making a request to a database
+- `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
+- In rare cases, we could try `Command Injection` in the header. 
+
 ## Exploiting jku Header Parameter
 Some servers let you use the `jku` (JWK Set URL) header parameter to reference a `JWK Set` (= a JSON object containing an array of JWKs representing different keys) containing the key. When verifying the signature, the server fetches the relevant key from this `URL`.
 
 `JWK Sets` are sometimes exposed publicly via a standard endpoint, such as `/.well-known/jwks.json`.
 
 More secure websites will only fetch keys from trusted domains, but you can sometimes take advantage of URL parsing discrepancies to bypass this kind of filtering. We covered some [examples of these](https://portswigger.net/web-security/ssrf#ssrf-with-whitelist-based-input-filters) in our topic on SSRF.
+
+By default on every header, we should try : 
+- `SQL` injection payload, because sometimes the header is making a request to a database
+- `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
+- In rare cases, we could try `Command Injection` in the header. 
 
 ## Exploiting kid Header Parameter
 Servers may use several cryptographic keys for signing different kinds of data, not just JWTs. For this reason, the header of a JWT may contain a `kid` (Key ID) parameter, which helps the server identify which key to use when verifying the signature.
@@ -78,12 +88,12 @@ This is especially dangerous if the server also supports JWTs signed using a [sy
 
 You could theoretically do this with any file, but one of the simplest methods is to use `/dev/null`, which is present on most Linux systems. As this is an empty file, reading it returns an empty string. Therefore, signing the token with a empty string will result in a valid signature.
 
-## Other interesting JWT Header Parameter
 By default on every header, we should try : 
 - `SQL` injection payload, because sometimes the header is making a request to a database
 - `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
 - In rare cases, we could try `Command Injection` in the header. 
 
+## Other interesting JWT Header Parameter
 The following header parameters may also be interesting for attackers:
 
 - `cty` (Content Type) - Sometimes used to declare a media type for the content in the JWT payload. This is usually omitted from the header, but the underlying parsing library may support it anyway. If you have found a way to bypass signature verification, you can try injecting a `cty` header to change the content type to `text/xml` or `application/x-java-serialized-object`, which can potentially enable new vectors for `XXE` and `deserialization` attacks.
