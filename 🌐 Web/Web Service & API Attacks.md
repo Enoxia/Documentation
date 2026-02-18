@@ -1,4 +1,4 @@
- Web services enable different applications to communicate with each other. An `application programming interface (API)` is a set of rules that enables data transmission between different software. 
+Web services enable different applications to communicate with each other. An `application programming interface (API)` is a set of rules that enables data transmission between different software. 
 - Web services are a type of API, but the opposite is not always true! = some of the web services technologies are XML-RPC, JSON-RPC, SOAP, WS-BPEL, RESTful...
 - WSDL (Web Service Description Language) = XML-based file exposed by web services that informs clients of the provided services/methods, including where they reside and the method-calling convention.
 We'll want to `find the SOAP web service's WSDL file` if it exists, by fuzzing the web application. If we found a `WSDL` file but we cannot read it, we should fuzz for available parameter to read it
