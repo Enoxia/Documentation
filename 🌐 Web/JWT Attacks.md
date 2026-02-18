@@ -79,6 +79,11 @@ This is especially dangerous if the server also supports JWTs signed using a [sy
 You could theoretically do this with any file, but one of the simplest methods is to use `/dev/null`, which is present on most Linux systems. As this is an empty file, reading it returns an empty string. Therefore, signing the token with a empty string will result in a valid signature.
 
 ## Other interesting JWT Header Parameter
+By default on every header, we should try : 
+- `SQL` injection payload, because sometimes the header is making a request to a database
+- `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
+- In rare cases, we could try `Command Injection` in the header. 
+
 The following header parameters may also be interesting for attackers:
 
 - `cty` (Content Type) - Sometimes used to declare a media type for the content in the JWT payload. This is usually omitted from the header, but the underlying parsing library may support it anyway. If you have found a way to bypass signature verification, you can try injecting a `cty` header to change the content type to `text/xml` or `application/x-java-serialized-object`, which can potentially enable new vectors for `XXE` and `deserialization` attacks.
