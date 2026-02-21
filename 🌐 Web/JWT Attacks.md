@@ -23,7 +23,7 @@ Occasionally, developers confuse these two methods and only pass incoming tokens
 ## Accepting tokens with no signature
 Among other things, the JWT `header` contains an `alg` parameter (e.g. HS256). This tells the server which algorithm was used to sign the token and, therefore, which algorithm it needs to use when verifying the signature.
 
-JWTs can be signed using a range of different algorithms, but can also be left unsigned. In this case, the `alg` parameter is set to `none`, which indicates a so-called "unsecured JWT". Due to the obvious dangers of this, servers usually reject tokens with no signature. However, as this kind of filtering relies on string parsing, you can sometimes bypass these filters using classic obfuscation techniques, such as `mixed capitalization` and `unexpected encodings`.
+JWTs can be signed using a range of different algorithms, but can also be left unsigned. In this case, the `alg` parameter is set to `none`, or `nOnE` which indicates a so-called "unsecured JWT". Due to the obvious dangers of this, servers usually reject tokens with no signature. However, as this kind of filtering relies on string parsing, you can sometimes bypass these filters using classic obfuscation techniques, such as `mixed capitalization` and `unexpected encodings`.
 
 # Bruteforcing Secret Keys
 Some signing algorithms, such as `HS256` (HMAC + SHA-256), use an arbitrary, standalone string as the secret key. Just like a password, it's crucial that this secret can't be easily guessed or brute-forced by an attacker.
