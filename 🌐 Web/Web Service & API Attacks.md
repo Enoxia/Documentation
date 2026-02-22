@@ -48,7 +48,7 @@ sudo tcpdump -i tun0 icmp
 
 
 
-# API Attacks
+# API Attacks : OWASP TOP TEN
 When we found an interesting `API endpoint` like `http://IP:PORT/api/endpoint?parameter=` we should always try various payloads of `SQLi, LFI, SSRF, and XSS if the parameter value gets reflected in the response`.
 
 Basically, we should try `OWASP TOP Ten` over APIs endpoints when we found them.
@@ -64,6 +64,12 @@ We should also verify [Authentication](https://cheatsheetseries.owasp.org/cheats
 - We could try to `bruteforce OTPs` if there is a `password reset` functionnality
 - We could try to `modify / guess security questions` to try to takeover an accoun, if implemented.
 
+## Broken Object Property Level Authorization
+It combines two subclasses: `Excessive Data Exposure` (when the API reveals sensitive data to authorized users that they are not supposed to access) and `Mass Assignment` (when the API permits authorized users to manipulate sensitive object properties beyond their authorized scope, including modifying, adding, or deleting values).
+
+We should check what data all APIs endpoints returns, to see if it doesn't get too  verbose.
+
+Within those data, we should try to send modified values to see if we can retrieve more privileges within the scope of the APIs.
 
 ## Info Disclosure w/ SQLi
 - When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
@@ -82,9 +88,15 @@ The tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) can help us au
 
 - Once found, try to test different values for the parameter
 - We could also try to combine `SQLi` through the `API endpoint` as this parameter `looks interesting`
-## File Upload
+
+## Unrestricted Resource Consumption (File Upload)
+Sometimes APIs fails to limit user-initiated requests that consume resources such as `network bandwidth`, `CPU`, `memory`, and `storage`. These resources incur significant costs, and without adequate safeguards—particularly effective rate-limiting—against excessive usage, users can exploit these vulnerabilities and cause financial damage.
+
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 We could find `API endpoint` that allow us to `upload a file`. If we could retrieve the uploaded file, then we should try to upload malicious code ! We can look at [[File Upload]] if there is any `file upload restrictions` in place
+
+We could also check if we're able to enumerate the uploaded folder destination if we have access to it.
+
 ## LFI
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 We could also use the `API` to read local files on the server. See the [[File Inclusion]] module to get more info and bypasses techniques.
