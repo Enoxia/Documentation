@@ -88,6 +88,21 @@ Within those data, we should try to send modified values to see if we can retrie
 ## Unrestricted Resource Consumption
 Sometimes APIs fails to limit user-initiated requests that consume resources such as `network bandwidth`, `CPU`, `memory`, and `storage`. These resources incur significant costs, and without adequate safeguards—particularly effective rate-limiting—against excessive usage, users can exploit these vulnerabilities and cause financial damage.
 
+- Again, don't forget to fuzz the `API` for new endpoints / parameters !
+
+Suppose we have a user that submits benign input to an API. On the server side, a developer could match any input against a regular expression. After a usually constant amount of time, the API responds. In some instances, an attacker may be able to cause significant delays in the API's response time by submitting a crafted payload that tries to exploit some particularities/inefficiencies of the regular expression matching engine. The longer this crafted payload is, the longer the API will take to respond. Exploiting such "evil" patterns in a regular expression to increase evaluation time is called a Regular Expression Denial of Service (ReDoS) attack.
+- We're working w/ the following `API`
+```bash
+# Default APIs
+curl "http://<TARGET IP>:3000/api/check-email?email=test_value"
+{"regex":"/^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/","success":false}
+
+# Input valid value to increase the response (evaluation) time by the API
+curl "http://<TARGET IP>:3000/api/check-email?email=jjjjjjjjjjjjjjjjjjjjjjjjjjjj@ccccccccccccccccccccccccccccc.55555555555555555555555555555555555555555555555555555555."
+```
+- The longer the payload would be, the longer the API will take to respond
+
+
 We should check, if an APIs uses some credits-limited or paid function, to bruteforce it to see if we can bypass or exceed the default limit, and thus generate additional fees.
 
 ## Broken Function Level Authorization (aka BFLA)
@@ -100,12 +115,12 @@ All businesses operate to generate revenue; however, if a web API exposes operat
 
 For example, we could determine the dates when the enterprise will discount their products, and the corresponding discount rates, to buy it cheaper and thus gain money over the company.
 
-## Security Misconfiguration
+## Security Misconfiguration (SQLi, XSS, XXE, File Upload...)
 Web APIs are susceptible to the same security misconfigurations that can compromise traditional web applications. One typical example is a web API endpoint that accepts `user-controlled input` and incorporates it into `SQL` queries `without proper validation`, thereby allowing Injection attacks.
 
-But it could be `XSS` it the value gets reflected on the page, or `XXE` if it encompass XML, which we'll cover later.
+But it could be `XSS` it the value gets reflected on the page, or `XXE` if it encompass XML, for example.
 
-### SQL Injections in APIs
+## SQL Injections in APIs
 If we suspect that an API is retrieving datas based on `user-input queries` (it could be getting the count of products, or searching for a specific username...), we should try `SQL` payloads to break the syntax or generate errors.
 
 ## File Upload
@@ -153,20 +168,11 @@ curl "http://<TARGET IP>:3000/api/userinfo?id=<BASE64 blob>"
 ```
 If we get a call, then the app is vulnerable to SSRF.
 
-
-## ReDoS
-- Again, don't forget to fuzz the `API` for new endpoints / parameters !
-Suppose we have a user that submits benign input to an API. On the server side, a developer could match any input against a regular expression. After a usually constant amount of time, the API responds. In some instances, an attacker may be able to cause significant delays in the API's response time by submitting a crafted payload that tries to exploit some particularities/inefficiencies of the regular expression matching engine. The longer this crafted payload is, the longer the API will take to respond. Exploiting such "evil" patterns in a regular expression to increase evaluation time is called a Regular Expression Denial of Service (ReDoS) attack.
-- We're working w/ the following `API`
-```bash
-# Default APIs
-curl "http://<TARGET IP>:3000/api/check-email?email=test_value"
-{"regex":"/^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/","success":false}
-
-# Input valid value to increase the response (evaluation) time by the API
-curl "http://<TARGET IP>:3000/api/check-email?email=jjjjjjjjjjjjjjjjjjjjjjjjjjjj@ccccccccccccccccccccccccccccc.55555555555555555555555555555555555555555555555555555555."
-```
-- The longer the payload would be, the longer the API will take to respond
 ## XXE
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 `XXE` injection can be found when `XML data` is taken from a user-controlled input. [[XML External Entity (XXE)]] module cover XXE discovery methods & attacks if we found `XML` w/ an `API`, it will work the same.
+
+## HTTP Headers
+APIs can also suffer from security misconfigurations if they do not use proper [HTTP Security Response Headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html). For example, suppose an API does not set a secure [Access-Control-Allow-Origin](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#access-control-allow-origin) as part of its CORS (Cross-Origin Resource Sharing) policy. In that case, it can be exposed to security risks, most notably, [Cross-Site Request Forgery](https://cwe.mitre.org/data/definitions/352.html) (`CSRF`).
+
+## Improper Inventory Management
