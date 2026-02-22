@@ -53,7 +53,7 @@ When we found an interesting `API endpoint` like `http://IP:PORT/api/endpoint?pa
 
 Basically, we should try `OWASP TOP Ten` over APIs endpoints when we found them.
 
-## Broken Object Level Authorization (aka IDOR)
+## Broken Object Level Authorization (aka IDOR or BOLA)
 Web APIs can allow users to request data or records by sending various parameters, including `UUIDs`, also known ad `GUIDs`, or integer `IDs`. Failing to properly and securely verify that a user has ownership and permission to view a specific resource through `objet-level authorization mechanisms` can lead to data exposure or security vulnerabilities.
 
 If we come accross `IDs` or `UUIDs` when requesting a resource, we should always try to enumerate resource with other values (fuzz).
@@ -70,6 +70,22 @@ It combines two subclasses: `Excessive Data Exposure` (when the API reveals sens
 We should check what data all APIs endpoints returns, to see if it doesn't get too  verbose.
 
 Within those data, we should try to send modified values to see if we can retrieve more privileges within the scope of the APIs.
+
+## Unrestricted Resource Consumption
+Sometimes APIs fails to limit user-initiated requests that consume resources such as `network bandwidth`, `CPU`, `memory`, and `storage`. These resources incur significant costs, and without adequate safeguards—particularly effective rate-limiting—against excessive usage, users can exploit these vulnerabilities and cause financial damage.
+
+We should check, if an APIs uses some credits-limited or paid function, to bruteforce it to see if we can bypass or exceed the default limit, and thus generate additional fees.
+
+## Broken Function Level Authorization (aka BFLA)
+A web API is vulnerable to `Broken Function Level Authorization (BFLA)` if it allows unauthorized or unprivileged users to interact with and invoke privileged endpoints, granting access to sensitive operations or confidential information. The difference between `BOLA` and `BFLA` is that, in the case of `BOLA`, the user is authorized to interact with the vulnerable endpoint, whereas in the case of `BFLA`, the user is not.
+
+To test this, we have to check if an API endpoint that requires privileges, can be use without those privileges.
+
+## Unrestricted Access to Sensitive Business Flows
+All businesses operate to generate revenue; however, if a web API exposes operations or data that allows users to abuse them and undermine the system (for example, by buying goods at a discounted price), it becomes vulnerable to `Unrestricted Access to Sensitive Business Flows`. An API endpoint is vulnerable if it exposes a sensitive business flow without appropriately restricting access to it.
+
+For example, we could determine the dates when the enterprise will discount their products, and the corresponding discount rates, to buy it cheaper and thus gain money over the company.
+
 
 ## Info Disclosure w/ SQLi
 - When we face API, we must spend considerable time on `fuzzing` both `endpoints` and `parameters`.
@@ -89,9 +105,7 @@ The tool [webfuzz_api](https://github.com/PandaSt0rm/webfuzz_api) can help us au
 - Once found, try to test different values for the parameter
 - We could also try to combine `SQLi` through the `API endpoint` as this parameter `looks interesting`
 
-## Unrestricted Resource Consumption (File Upload)
-Sometimes APIs fails to limit user-initiated requests that consume resources such as `network bandwidth`, `CPU`, `memory`, and `storage`. These resources incur significant costs, and without adequate safeguards—particularly effective rate-limiting—against excessive usage, users can exploit these vulnerabilities and cause financial damage.
-
+## File Upload
 - Again, don't forget to fuzz the `API` for new endpoints / parameters !
 We could find `API endpoint` that allow us to `upload a file`. If we could retrieve the uploaded file, then we should try to upload malicious code ! We can look at [[File Upload]] if there is any `file upload restrictions` in place
 
