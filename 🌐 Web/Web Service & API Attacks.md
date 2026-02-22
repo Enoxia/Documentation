@@ -176,3 +176,15 @@ If we get a call, then the app is vulnerable to SSRF.
 APIs can also suffer from security misconfigurations if they do not use proper [HTTP Security Response Headers](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html). For example, suppose an API does not set a secure [Access-Control-Allow-Origin](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html#access-control-allow-origin) as part of its CORS (Cross-Origin Resource Sharing) policy. In that case, it can be exposed to security risks, most notably, [Cross-Site Request Forgery](https://cwe.mitre.org/data/definitions/352.html) (`CSRF`).
 
 ## Improper Inventory Management
+If we have a `swagger`, we should check if we can select a `different version` of the API, or if we can reach a `/api/vX` instead of the default version, which may contain order entry points or expose sensitive datas.
+
+## Unsafe Consumption of APIs
+APIs frequently interact with other APIs to exchange data, forming a complex ecosystem of interconnected services. While this interconnectivity enhances functionality and efficiency, it also introduces significant security risks if not managed properly. Developers may blindly trust data received from third-party APIs, especially when provided by reputable organizations, leading to relaxed security measures, particularly in input validation and data sanitization.
+
+Several critical vulnerabilities can arise from API-to-API communication:
+
+1. `Insecure Data Transmission`: APIs communicating over unencrypted channels expose sensitive data to interception, compromising confidentiality and integrity.
+2. `Inadequate Data Validation`: Failing to properly validate and sanitize data received from external APIs before processing or forwarding it to downstream components can lead to injection attacks, data corruption, or even remote code execution.
+3. `Weak Authentication`: Neglecting to implement robust authentication methods when communicating with other APIs can result in unauthorized access to sensitive data or critical functionality.
+4. `Insufficient Rate-Limiting`: An API can overwhelm another API by sending a continuous surge of requests, potentially leading to denial-of-service.
+5. `Inadequate Monitoring`: Insufficient monitoring of API-to-API interactions can make it difficult to detect and respond to security incidents promptly.
