@@ -250,3 +250,15 @@ fragment TypeRef on __Type {
 ```
 We then need to see the `inputs` needed by the objects, and identify the fields that we can use in mutation.
 
+# Tools
+We can use the tool [GraphQL-Cop](https://github.com/dolevf/graphql-cop), a security audit tool for GraphQL APIs that can identify multiple basic security configuration checks, and lists all identified issues
+```bash
+python3 graphql-cop/graphql-cop.py -t http://172.17.0.2/graphql
+```
+
+- [InQL](https://github.com/doyensec/inql) is a Burp extension we can install via the BApp Store in Burp. The extension adds `GraphQL` tabs in the Proxy History and Burp Repeater that enable simple modification of the GraphQL query without having to deal with the encompassing JSON syntax:
+
+Furthermore, we can right-click on a GraphQL request and select `Extensions > InQL - GraphQL Scanner > Generate queries with InQL Scanner`. Afterward, InQL generates introspection information. The information regarding all mutations and queries is provided in the `InQL` tab for the scanned host.
+
+# Prevention
+[Here](https://academy.hackthebox.com/module/271/section/3158) we can have a list of `GraphQL` vulnerability prevention.
