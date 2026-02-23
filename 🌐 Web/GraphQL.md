@@ -162,5 +162,91 @@ As the GraphQL query only returns the first row, we need to use the `GROUP_CONCA
 # DoS
 We can try to create some `GraphQL queries` that result in exponentially large responses, requiring significant resources to process. This can lead to high hardware utilization, and thus DoS.
 
-- We can try to identify a `loop` between fields. 
+- We can try to identify a `loop` between fields. For example here, we can identify a loop between the `UserObject` and `PostObject` via the `author` and `posts` fields :
+<img width="962" height="408" alt="image" src="https://github.com/user-attachments/assets/50c99849-c8b9-4ed2-a6b5-aa1457d450d6" />
+We can abuse this `loop` by constructing a query that queries the author of all posts. For each author, we then query the author of all posts again.
+
+If we repeat this many times, the result grows exponentially larger, potentially resulting in a DoS scenario.
+
+## Batching Attacks
+Batching in GraphQL refers to executing `multiple queries` with a `single request`. We can do so by directly supplying multiple queries in a JSON list in the HTTP request.
+
+For instance, we can query the ID of the user admin and the title of the first post in a single request:
+```http
+Code: http
+POST /graphql HTTP/1.1
+Host: 172.17.0.2
+Content-Length: 86
+Content-Type: application/json
+
+[
+	{
+		"query":"{user(username: \"admin\") {uuid}}"
+	},
+	{
+		"query":"{post(id: 1) {title}}"
+	}
+]
+```
+Batching is not a security vulnerability but an intended feature that can be enabled or disabled. However, batching can lead to security issues if GraphQL queries are used for sensitive processes such as user login.
+
+Since batching enables an attacker to provide multiple GraphQL queries in a single request, it can potentially be used to conduct brute-force attacks with significantly fewer HTTP requests. This could lead to bypasses of security measures in place to prevent brute-force attacks, such as rate limits.
+
+# Mutations
+GraphQL also provides a way to modify data with `mutations` : those are GraphQL queries that `modify` server data. They can be used to `create` new objects, `update` existing objects, or `delete` existing objects.
+
+We can use an `introspection query` to identify all mutations supported by the backend and their arguments : 
+```graphql
+query {
+  __schema {
+    mutationType {
+      name
+      fields {
+        name
+        args {
+          name
+          defaultValue
+          type {
+            ...TypeRef
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment TypeRef on __Type {
+  kind
+  name
+  ofType {
+    kind
+    name
+    ofType {
+      kind
+      name
+      ofType {
+        kind
+        name
+        ofType {
+          kind
+          name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+We then need to see the `inputs` needed by the objects, and identify the fields that we can use in mutation.
 
