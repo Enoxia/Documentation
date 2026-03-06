@@ -5,7 +5,17 @@ If we found a `.git` folder from a URL, we can use [git-dumper](https://github.c
 git-dumper http://website.com/.git ~/website
 ```
 
+We can also use a [rewrite](https://github.com/holly-hacker/git-dumper) of the tool, which is 10x faster
+```bash
+python3 git-dumper.py https://victim/.git/ out && cd out && git checkout -- .
+```
+
 Once downloaded, we can use [GitKraken](https://www.gitkraken.com/) to inspect its content.
+
+The tool [GitDump](https://github.com/Ebryx/GitDump) brute-forces object names from `.git/index, packed-refs, etc.` to recover repos even when directory traversal is disabled :
+```bash
+python3 git-dump.py https://victim/.git/ dump && cd dump && git checkout -- .
+```
 
 => If a .git directory is found in a web application you can download all the content using `wget -r http://web.com/.git`. Then, you can see the changes made by using `git diff`.
 
@@ -13,7 +23,23 @@ Once downloaded, we can use [GitKraken](https://www.gitkraken.com/) to inspect i
 - The tool [Git-Vuln-Finder](https://github.com/cve-search/git-vuln-finder) can be used to search for CVEs and security vulnerability messages inside commits messages.
 - The tool [GitRob](https://github.com/michenriksen/gitrob) search for sensitive data in the repositories of an organisations and its employees.
 - [Repo security scanner](https://github.com/UKHomeOffice/repo-security-scanner) is a command line-based tool that was written with a single goal: to help you discover GitHub secrets that developers accidentally made by pushing sensitive data. And like the others, it will help you find passwords, private keys, usernames, tokens and more.
+- [Here](https://securitytrails.com/blog/github-dorks) we can find an study about github dorks
 
+## Git post-dump
+```bash
+cd dumpdir
 
+# Reconstruct working tree
+git checkout -- .
 
+# Show branch/commit map
+git log --graph --oneline --decorate --all
 
+# list suspicious config/remotes/hooks
+git config -l
+ls .git/hooks
+```
+
+## Credentials Hunting
+- [GitLeaks](https://github.com/gitleaks/gitleaks) is a tool for detecting secrets like passwords, API keys, and tokens in git repos, files, and whatever else you wanna throw at it via stdin.
+- [TruffleHog](https://github.com/trufflesecurity/trufflehog) is designed to detect and verify secrets in codebases with high accuracy.
