@@ -1,1 +1,18 @@
+# .git Found
+If we found a `.git` folder from a URL, we can use [git-dumper](https://github.com/arthaud/git-dumper) to dump it 
+```bash
+git-dumper http://website.com/.git ~/website
+```
+
+Once downloaded, we can use [GitKraken](https://www.gitkraken.com/) to inspect its content.
+
+=> If a .git directory is found in a web application you can download all the content using `wget -r http://web.com/.git`. Then, you can see the changes made by using `git diff`.
+
+- The tools: [Git-Money](https://github.com/dnoiz1/git-money), [DVCS-Pillage](https://github.com/evilpacket/DVCS-Pillage) and [GitTools](https://github.com/internetwache/GitTools) can be used to retrieve the content of a git directory.
+- The tool [Git-Vuln-Finder](https://github.com/cve-search/git-vuln-finder) can be used to search for CVEs and security vulnerability messages inside commits messages.
+- The tool [GitRob](https://github.com/michenriksen/gitrob) search for sensitive data in the repositories of an organisations and its employees.
+- [Repo security scanner](https://github.com/UKHomeOffice/repo-security-scanner) is a command line-based tool that was written with a single goal: to help you discover GitHub secrets that developers accidentally made by pushing sensitive data. And like the others, it will help you find passwords, private keys, usernames, tokens and more.
+
+
+
 
