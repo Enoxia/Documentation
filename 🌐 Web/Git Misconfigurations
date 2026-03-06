@@ -1,4 +1,5 @@
 # .git Found
+
 If we found a `.git` folder from a URL, we can use [git-dumper](https://github.com/arthaud/git-dumper) to dump it 
 ```bash
 git-dumper http://website.com/.git ~/website
