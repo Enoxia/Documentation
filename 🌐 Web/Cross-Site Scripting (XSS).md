@@ -18,6 +18,8 @@ There are four main types of XSS vulnerabilities :
 "
 '
 ```
+Attention : si le site convertis par exemple les chevrons d'ouverture `<` en `&lt;`, alors les entrées utilisateurs ont été dépolluées par un encodage des entités HTML (Output Encoding). Elles s'affichent comme du texte brut, mais ne peuvent exécuter de code. Donc **non vulnérable**.
+
 ## Automated
 - Web application scanners (like [Nessus](https://www.tenable.com/products/nessus), [Burp Pro](https://portswigger.net/burp/pro), or [ZAP](https://www.zaproxy.org/))
 - Common open-spirce tools can assist like [XSS Strike](https://github.com/s0md3v/XSStrike), [Brute XSS](https://github.com/rajeshmajumdar/BruteXSS), and [XSSer](https://github.com/epsylon/xsser).
