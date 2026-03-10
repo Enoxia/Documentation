@@ -101,3 +101,10 @@ The following header parameters may also be interesting for attackers:
 
 # JWT Algorithm Confusion
 Even if a server uses robust secrets that you are unable to brute-force, you may still be able to forge valid JWTs by signing the token using an algorithm that the developers haven't anticipated. This is known as an [algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion) attack.
+
+# JWT Revoke
+If an application handles token revocation with a blacklist by storing the exact encoded token string instead of relying on a unique internal identifier (such as the `jti` claim), then we can try to add base64 padding `=` to the very end of the JWT (specifically on the signature portion); this minor alteration changes the string's footprint, allowing it to evade the strict blacklist check, while the backend library still decodes it identically and validates the legitimate signature.
+
+We can detect this flaw during a source code audit by spotting the storage and direct comparison of raw tokens, or dynamically by verifying if a freshly revoked token, once padded, is successfully accepted by the server.
+
+This structural weakness exists specifically because the mechanism attempts to revoke the encoded envelope (the textual container) rather than logically invalidating the token based on its internal payload.
