@@ -8,7 +8,7 @@ Several tools can be used to attempt ``LLMNR & NBT-NS`` poisoning :
 |[Inveigh](https://github.com/Kevin-Robertson/Inveigh)|Inveigh is a cross-platform MITM platform that can be used for spoofing and poisoning attacks.|
 |[Metasploit](https://www.metasploit.com/)|Metasploit has several built-in scanners and spoofing modules made to deal with poisoning attacks.|
 
-This will give us the `Net-NTLMv2` hash of the user (Net-NTLMv2 hash = a challenge crypted by the victim using his `NT` hash)
+This will give us the `Net-NTLMv2` hash of the user (`Net-NTLMv2` hash = a challenge crypted by the victim using his `NT` hash)
 ```bash
 responder -I ens33
 ```
