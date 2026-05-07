@@ -59,6 +59,8 @@ You can also perform this attack manually by adding the `jwk` header yourself. H
 
 By default on every header, we should try : 
 - `SQL` injection payload, because sometimes the header is making a request to a database
+=> To test `SQLi` in a JWT using `Burp`, we can setup our `Intruder`, then choosing our `SQLi payloads list` (we can use the default one by Burp), and finally add `rules` inside the `Payload processing` tab. We can `add a prefix` containing the beginning of the JWT ex: `{"alg":"HS256","kid":"`, then `add a suffix` containing the end of the JWT ex: `","typ":"JWT"}`, and finally add the `Base64-encode` rule to encode everything. Be careful to verify if the JWT accepts `+/=` signs, or if we have to replace them by respectively `-_` and leave empty for the `=` padding that will be ignored.
+
 - `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
 - In rare cases, we could try `Command Injection` in the header. 
 
