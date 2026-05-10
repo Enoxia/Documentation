@@ -2,6 +2,7 @@
 
 ```{toctree}
 :maxdepth: 1
+:titlesonly:
 
 Information Gathering
 Website Enumeration
