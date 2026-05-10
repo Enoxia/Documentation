@@ -1,3 +1,5 @@
+# Command Injections
+
 A Command Injection vulnerability allows us to `execute system commands` directly on the back-end hosting server, which could lead to compromising the entire network.
 ![Basic Exercise](https://academy.hackthebox.com/storage/modules/109/cmdinj_basic_exercise_2.jpg)
 
