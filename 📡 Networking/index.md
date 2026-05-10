@@ -1,0 +1,10 @@
+# 📡 Networking
+
+.. # Automatically include all Markdown files in this directory
+.. # Files will appear as sub-pages in the sidebar
+
+```{toctree}
+:maxdepth: 1
+:glob:
+
+*
