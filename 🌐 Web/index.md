@@ -1,10 +1,29 @@
 # 🌐 Web
 
-.. # Automatically include all Markdown files in this directory
-.. # Files will appear as sub-pages in the sidebar
+.. # Listing files manually to preserve repository order
+.. # Set maxdepth to 1 to prevent H1/H2 from appearing in the sidebar
 
 ```{toctree}
 :maxdepth: 1
-:glob:
 
-*
+Information Gathering
+Website Enumeration
+JavaScript Deobfuscation
+Git Misconfigurations
+HTTP Verb Tampering
+Insecure Direct Object References (IDOR)
+File Inclusion
+Command Injections
+File Upload
+Cross-Site Scripting (XSS)
+SQL Injections
+Server-Side Includes (SSI) Injection
+Server-Side Request Forgery (SSRF)
+Server-Side Template Injection (SSTI)
+XML External Entity (XXE)
+XSLT Server-Side Injection
+JWT Attacks
+Session Attacks
+Login Bypass
+GraphQL
+Web Service & API Attacks
