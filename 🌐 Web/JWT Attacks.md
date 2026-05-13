@@ -122,6 +122,10 @@ The following header parameters may also be interesting for attackers:
 # JWT Algorithm Confusion
 Even if a server uses robust secrets that you are unable to brute-force, you may still be able to forge valid JWTs by signing the token using an algorithm that the developers haven't anticipated. This is known as an [algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion) attack.
 
+## Changing the algorithm from RS256 to HS256
+The algorithm HS256 uses a secret key to sign and verify each message. The algorithm RS256 uses a private key to sign messages, and a public key to verify them. If we change the algorithm from RS256 to HS256, the signature is now verified using the HS256 algorithm using the public key as secret key. Since the public key is not secret at all, we can correctly sign such messages.
+We can find more info and example [here](https://repository.root-me.org/Exploitation%20-%20Web/EN%20-%20Attacking%20JWT%20authentication%20-%20Sjoerd%20Langkemper.pdf?_gl=1*9ok0gg*_ga*MTE3ODYwMTE1OS4xNzcwODI4NzE3*_ga_SRYSKX09J7*czE3Nzg2ODQ0MTgkbzI4JGcxJHQxNzc4Njg2MTYyJGo1OCRsMCRoMA..) and [here](https://repository.root-me.org/Exploitation%20-%20Web/EN%20-%20Hacking%20JSON%20Web%20Token%20(JWT)%20-%20Rudra%20Pratap.pdf?_gl=1*1byttpa*_ga*MTE3ODYwMTE1OS4xNzcwODI4NzE3*_ga_SRYSKX09J7*czE3Nzg2ODQ0MTgkbzI4JGcxJHQxNzc4Njg2MTY1JGo1NSRsMCRoMA..)
+
 # JWT Revoke
 If an application handles token revocation with a blacklist by storing the exact encoded token string instead of relying on a unique internal identifier (such as the `jti` claim), then we can try to add base64 padding `=` to the very end of the JWT (specifically on the signature portion); this minor alteration changes the string's footprint, allowing it to evade the strict blacklist check, while the backend library still decodes it identically and validates the legitimate signature.
 
