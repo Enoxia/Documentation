@@ -39,6 +39,7 @@ Only the `alg` header parameter is mandatory, but sometimes JWT headers contain 
 - `jwk` (JSON Web Key) - Provides an embedded JSON object representing the key.
 - `jku` (JSON Web Key Set URL) - Provides a URL from which servers can fetch a set of keys containing the correct key.
 - `kid` (Key ID) - Provides an ID that servers can use to identify the correct key in cases where there are multiple keys to choose from. Depending on the format of the key, this may have a matching `kid` parameter.
+
 ## Exploiting jwk Header Parameter
 The JSON Web Signature (JWS) specification describes an optional `jwk` header parameter, which servers can use to embed their `public key` directly within the token itself in JWK format.
 
@@ -57,6 +58,11 @@ The Burp's [JWT Editor Extension](https://portswigger.net/bappstore/26aaa5ded2f7
 
 You can also perform this attack manually by adding the `jwk` header yourself. However, you may also need to `update the JWT's kid` header parameter to match the `kid` of the embedded key. The extension's built-in attack takes care of this step for you.
 
+The tool [jwt_tool](https://github.com/ticarpi/jwt_tool) can also help us automate the process using the `original JWT token`, and the field we want to see : 
+```bash
+jwt_tool "ORIGINAL_TOKEN_HERE" -I -pc user -pv admin -X i
+```
+
 By default on every header, we should try : 
 - `SQL` injection payload, because sometimes the header is making a request to a database
 => To test `SQLi` in a JWT using `Burp`, we can setup our `Intruder`, then choosing our `SQLi payloads list` (we can use the default one by Burp), and finally add `rules` inside the `Payload processing` tab. We can `add a prefix` containing the beginning of the JWT ex: `{"alg":"HS256","kid":"`, then `add a suffix` containing the end of the JWT ex: `","typ":"JWT"}`, and finally add the `Base64-encode` rule to encode everything. Be careful to verify if the JWT accepts `+/=` signs, or if we have to replace them by respectively `-_` and leave empty for the `=` padding that will be ignored.
@@ -71,10 +77,15 @@ Some servers let you use the `jku` (JWK Set URL) header parameter to reference a
 
 More secure websites will only fetch keys from trusted domains, but you can sometimes take advantage of URL parsing discrepancies to bypass this kind of filtering. We covered some [examples of these](https://portswigger.net/web-security/ssrf#ssrf-with-whitelist-based-input-filters) in our topic on SSRF.
 
+The tool [jwt_tool](https://github.com/ticarpi/jwt_tool) can also help us automate the process using the `original JWT token`, and the field we want to see : 
+```bash
+jwt_tool "ORIGINAL_TOKEN_HERE" -I -pc user -pv admin -X s -ju "https://ton-serveur-attaquant.com/jwks.json"
+```
+
 By default on every header, we should try : 
 - `SQL` injection payload, because sometimes the header is making a request to a database
 - `SSRF` if the header is fetching an `URL`, or if it gets `interpreted as` a URL
-- In rare cases, we could try `Command Injection` in the header. 
+- In rare cases, we could try `Command Injection` in the header.
 
 ## Exploiting kid Header Parameter
 Servers may use several cryptographic keys for signing different kinds of data, not just JWTs. For this reason, the header of a JWT may contain a `kid` (Key ID) parameter, which helps the server identify which key to use when verifying the signature.
