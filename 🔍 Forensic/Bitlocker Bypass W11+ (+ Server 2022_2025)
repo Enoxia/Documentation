@@ -1,1 +1,1 @@
-
+The [YellowKey](https://github.com/Nightmare-Eclipse/YellowKey/tree/main) allows us with physical access to a Windows 11 or Server 2022/2025 machine to completely bypass BitLocker encryption by manipulating the `Windows Recovery Environment (WinRE)` to obtain a command shell with full access to the decrypted data.
