@@ -17,3 +17,59 @@
 |**Airdecap-ng**|Airdecap-ng can decrypt WEP, WPA PSK, or WPA2 PSK capture files.|
 |**Aircrack-ng**|Aircrack-ng can crack WEP and WPA/WPA2 networks that use pre-shared keys or PMKID.|
 
+# Airmon-ng
+`Monitor mode` is a specialized mode for wireless network interfaces, enabling them to capture all traffic within a WiFi range. Unlike managed mode, where an interface only processes frames addressed to it, monitor mode allows the interface to capture every packet of data it detects, regardless of its intended recipient. 
+
+This capability is invaluable for network analysis, troubleshooting, and security assessments, as it provides a comprehensive view of the network's activity. By enabling monitor mode, users can intercept and analyze packets, detect unauthorized devices, identify network vulnerabilities, and gather comprehensive data on wireless networks. This mode provides a deeper level of insight into the wireless environment, facilitating more effective troubleshooting, security assessments, and performance evaluations.
+
+```bash
+# Show the wireless interface name, driver & chipset
+sudo airmon-ng
+
+# Starting Monitor mode on wlan0 interface
+sudo airmon-ng start wlan0
+
+# Starting Monitor mode on wlan0 interface on specific channel
+sudo airmon-ng start wlan0 11
+
+# Verify the mode of the wlan0 interface (Mode:Monitor or Mode:Managed) 
+iwconfig
+
+# Stopping Monitor mode
+sudo airmon-ng stop wlan0mon
+```
+
+## Checking for interfering processes
+When putting a card into monitor mode, it will automatically check for interfering processes.
+```bash
+# Checking for interfering processes
+sudo airmon-ng check
+
+Found 5 processes that could cause trouble.
+If airodump-ng, aireplay-ng or airtun-ng stops working after
+a short period of time, you may want to kill (some of) them!
+
+  PID Name
+  718 NetworkManager
+  870 dhclient
+ 1104 avahi-daemon
+ 1105 avahi-daemon
+ 1115 wpa_supplicant
+```
+As shown in the above output, there are 5 interfering processes that can cause issues by changing channels or putting the interface back into managed mode. If we encounter problems during our engagement, we can terminate these processes using the airmon-ng check kill command.
+
+However, it is important to note that this step should `only be taken if` we are experiencing challenges during the pentesting process.
+```bash
+sudo airmon-ng check kill
+
+Killing these processes:
+
+  PID Name
+  870 dhclient
+ 1115 wpa_supplicant
+```
+
+
+
+
+
